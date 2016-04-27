@@ -1,5 +1,5 @@
-#define K 4		//Total expected clusters
-#define N 1000	//Total samples
+#define K 4				//Total expected clusters
+#define N 100000		//Total samples
 #define MAXVALUE 100	//Max random value
 #define EPOCHS 100000	//Max number of epochs
 

@@ -117,19 +117,32 @@ int stopKmeans(Cluster *clusters, int totalClusters, int epochs){
 }
 
 void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int totalClusters){
-	int i,j, winner, epochs=0;
-	int continueRunning = 1;
+	int i,j, winner, epochs, continueRunning;
+	continueRunning = 1;
+	epochs=0;
 	while(continueRunning){
 		cleanClusters(clusters, totalClusters);
+		//TODO:
+		/*
+		* Es posible hacerlo de esta forma? Ya que en la forma que se agregan los elementos a los diferentes
+		* clusters, tenemos una seccion critica y el aumento del total de los elementos
+		*
+		* La otra forma seria, por cada cluster mandar a evaluar todos los elementos y ver si 
+		* entran en el cluster que los mando a llamar donde el numero de hilos seria igual al numero
+		* de clusters que deseamos encontrar.
+		*/
 		for(i=0; i<totalElementsDataSet; i++){
 			double distance = getDistance(dataset[i], clusters[0].currentCentroid);
+			double distanceToCentroid = distance;
 			winner = 0;
 			for(j=1; j<totalClusters; j++){
-				if(distance > getDistance(dataset[i], clusters[j].currentCentroid)){
-					distance = getDistance(dataset[i], clusters[j].currentCentroid);
+				distance = getDistance(dataset[i], clusters[j].currentCentroid);
+				if(distanceToCentroid > distance){
+					distanceToCentroid = distance;
 					winner = j;
 				}
 			}
+			//int *indexInCluster = &clusters[winner].totalElements;
 			clusters[winner].elements[clusters[winner].totalElements] = dataset[i];
 			clusters[winner].totalElements++;
 		}
