@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <sys/time.h>
 
 #include "utils.h"
 #include "serialKmeans.h"
@@ -131,6 +132,8 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 		* entran en el cluster que los mando a llamar donde el numero de hilos seria igual al numero
 		* de clusters que deseamos encontrar.
 		*/
+		
+
 		for(i=0; i<totalElementsDataSet; i++){
 			double distance = getDistance(dataset[i], clusters[0].currentCentroid);
 			double distanceToCentroid = distance;
@@ -142,9 +145,11 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 					winner = j;
 				}
 			}
-			clusters[winner].elements[clusters[winner].totalElements] = dataset[i];
-			clusters[winner].totalElements++;
+			int *totalElements = &clusters[winner].totalElements;
+			clusters[winner].elements[*totalElements] = dataset[i];
+			*totalElements = *totalElements + 1;
 		}
+
 		refreshCentroids(clusters, K);
 		epochs++;
 		continueRunning = stopKmeans(clusters, K, epochs);	
@@ -160,9 +165,16 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 * Run: ./skm
 */
 int main(int argc, char *argv[]){
+	struct timeval tval_before, tval_after, tval_result;
+	gettimeofday(&tval_before, NULL);
+
 	Point samples[N];
 	Cluster clusters[K];
 	initializeElements(samples, N);
 	initializeClusters(clusters, K);
 	kmeans(samples, N, clusters, K);
+
+	gettimeofday(&tval_after, NULL);
+	timersub(&tval_after, &tval_before, &tval_result);
+	printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 }
