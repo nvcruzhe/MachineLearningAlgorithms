@@ -142,7 +142,6 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 					winner = j;
 				}
 			}
-			//int *indexInCluster = &clusters[winner].totalElements;
 			clusters[winner].elements[clusters[winner].totalElements] = dataset[i];
 			clusters[winner].totalElements++;
 		}
