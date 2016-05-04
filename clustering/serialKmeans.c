@@ -25,56 +25,12 @@ int comparePoints(Point a, Point b){
 	return 0;
 }
 
-
-float euclid_dist_2(int    numdims,  /* no. dimensions */
-                    float *coord1,   /* [numdims] */
-                    float *coord2)   /* [numdims] */
-{
-    int i;
-    float ans=0.0;
-
-    for (i=0; i<numdims; i++)
-        ans += (coord1[i]-coord2[i]) * (coord1[i]-coord2[i]);
-
-    return(ans);
-}
-
 double getDistance(Point local, Point far){
 	double x = local.x - far.x;
 	double y = local.y - far.y;
 	x = x*x;
 	y = y*y;
 	return x+y;
-}
-
-void getNewCentroid(Cluster cluster, Point *newCentroid, Point *dataset){
-	int i;
-	double aveX = 0;
-	double aveY = 0;
-	int totalElements = cluster.totalElements;
-	int *clusterElements = cluster.elements;
-	int dataSetIndex = 0;
-
-	if(totalElements == 0)
-		return;
-
-#pragma omp parallel for private(i,dataSetIndex) reduction(+:aveX, aveY)
-	for(i=0; i<totalElements; i++){
-		dataSetIndex = clusterElements[i];
-		aveX+=dataset[dataSetIndex].x;
-		aveY+=dataset[dataSetIndex].y;
-	}
-
-	newCentroid->x=aveX/totalElements;
-	newCentroid->y=aveY/totalElements;
-}
-
-void printElements(int *elements, int totalElements, Point *dataSet){
-	int i,index;
-	for(i=0; i<totalElements; i++){
-		index = elements[i];
-		printf("P(%f,%f)\n", dataSet[index].x, dataSet[index].y);
-	}	
 }
 
 //Clusters actions
@@ -91,57 +47,28 @@ void initializeClusters(Cluster *clusters, int totalElements){
 	}
 }
 
-void refreshCentroids(Cluster *clusters, int totalClusters, Point *dataset){
+void cleanClusters(Cluster *clusters, int totalClusters, int *whichClusterIn){
 	int i;
+//#pragma omp parallel for private(i)
 	for(i=0; i<totalClusters; i++){
-		Point newCentroid;
-		getNewCentroid(clusters[i], &newCentroid, dataset);
-		clusters[i].lastCentroid.x = clusters[i].currentCentroid.x;
-		clusters[i].lastCentroid.y = clusters[i].currentCentroid.y;
-		clusters[i].currentCentroid.x = newCentroid.x;
-		clusters[i].currentCentroid.y = newCentroid.y;
-	}
-}
-
-void cleanClusters(Cluster *clusters, int totalClusters){
-	int i;//,j;
-	//int clusterElements = 0;
-	for(i=0; i<totalClusters; i++){
-		/*
-		clusterElements = clusters[i].totalElements;
-		if(clusterElements!=0){
-			for(j=0; j<clusterElements; j++){
-				clusters[i].elements[j] = 0;
-			}
-			clusters[i].totalElements = 0;
-		}
-		*/
 		clusters[i].xSum = 0.0;
 		clusters[i].ySum = 0.0;
 		clusters[i].totalElements = 0;
-	}	
-}
-
-
-void printClustersNoElements(Cluster *clusters, int totalElements, Point *dataSet){
-	int i = 0;
-	for(i=0; i<totalElements; i++){
-		printf("Cluster:%d, currentCentroid: (%f,%f) | lastCentroid:(%f,%f) , Total elements: %d\n",
-			i+1, clusters[i].currentCentroid.x, clusters[i].currentCentroid.y,
-			clusters[i].lastCentroid.x, clusters[i].lastCentroid.y,
-			clusters[i].totalElements);
+	}
+//#pragma omp parallel for private(i)
+	for(i=0; i<N; i++){
+		whichClusterIn[i] = -1;
 	}
 }
 
 
-void printClustersElements(Cluster *clusters, int totalElements, Point *dataSet){
+void printClusters(Cluster *clusters, int totalElements, Point *dataSet){
 	int i = 0;
 	for(i=0; i<totalElements; i++){
 		printf("Cluster:%d, currentCentroid: (%f,%f) | lastCentroid:(%f,%f) , Total elements: %d\n",
 			i+1, clusters[i].currentCentroid.x, clusters[i].currentCentroid.y,
 			clusters[i].lastCentroid.x, clusters[i].lastCentroid.y,
 			clusters[i].totalElements);
-		printElements(clusters[i].elements, clusters[i].totalElements, dataSet);
 	}
 }
 
@@ -179,25 +106,24 @@ int winnerCluster(Point point, Cluster *clusters, int totalClusters){
 	return winner;
 }
 
-void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int totalClusters){
+void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int totalClusters, int *whichClusterIn){
 	int i,j,winner, epochs, continueRunning;
 	continueRunning = 1;
 	epochs=0;
 	while(continueRunning){
 		if(epochs!=0)
-			cleanClusters(clusters, totalClusters);
+			cleanClusters(clusters, totalClusters, whichClusterIn);
 
+		//Check which centroid is the nearest for the coordinate 
 		for(i=0; i<totalElementsDataSet; i++){
 			winner = winnerCluster(dataset[i], clusters, totalClusters);
-			//int *totalElements = &clusters[winner].totalElements;
-			//clusters[winner].elements[*totalElements] = i;
-			//*totalElements = *totalElements + 1;
 			clusters[winner].totalElements++;
 			clusters[winner].xSum += dataset[i].x;
 			clusters[winner].ySum += dataset[i].y;
+			whichClusterIn[i] = winner;
 		}
 
-		//refreshCentroids(clusters, totalClusters, dataset);
+		//Refresh and recalculate centroids
 		for(i=0; i<totalClusters; i++){
 			double x = clusters[i].xSum/clusters[i].totalElements;
 			double y = clusters[i].ySum/clusters[i].totalElements;
@@ -206,11 +132,12 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 			clusters[i].currentCentroid.x = x;
 			clusters[i].currentCentroid.y = y;
 		}
+
 		epochs++;
 		continueRunning = stopKmeans(clusters, totalClusters, epochs);
 	}
 
-	printClustersNoElements(clusters, totalClusters, dataset);
+	printClusters(clusters, totalClusters, dataset);
 	printf("continueRunning: %d, Epochs: %d\n", continueRunning, epochs);
 }
 
@@ -224,18 +151,22 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 * Run: ./skm
 */
 int main(int argc, char *argv[]){
+	//Variables
 	struct timeval tval_before, tval_after, tval_result;
-	gettimeofday(&tval_before, NULL);
-
 	Point samples[N];
 	Cluster clusters[K];
+	int whichClusterIn[N];
 	
+	//Initialize variables
 	initializeElements(samples, N);
 	initializeClusters(clusters, K);
-	
-	kmeans(samples, N, clusters, K);
-	
+
+	//Start processing
+	gettimeofday(&tval_before, NULL);
+	kmeans(samples, N, clusters, K, whichClusterIn);
 	gettimeofday(&tval_after, NULL);
+
+	//Results
 	timersub(&tval_after, &tval_before, &tval_result);
 	printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 }
