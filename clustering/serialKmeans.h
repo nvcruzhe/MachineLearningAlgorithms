@@ -11,6 +11,8 @@ typedef struct{
 typedef struct{
 	int totalElements;
 	int elements[N];
+	double xSum;
+	double ySum;
 	Point lastCentroid;
 	Point currentCentroid;
 } Cluster;

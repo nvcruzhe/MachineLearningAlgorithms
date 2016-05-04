@@ -25,8 +25,26 @@ int comparePoints(Point a, Point b){
 	return 0;
 }
 
+
+float euclid_dist_2(int    numdims,  /* no. dimensions */
+                    float *coord1,   /* [numdims] */
+                    float *coord2)   /* [numdims] */
+{
+    int i;
+    float ans=0.0;
+
+    for (i=0; i<numdims; i++)
+        ans += (coord1[i]-coord2[i]) * (coord1[i]-coord2[i]);
+
+    return(ans);
+}
+
 double getDistance(Point local, Point far){
-	return sqrt(pow((local.x - far.x),2) + pow((local.y - far.y),2));
+	double x = local.x - far.x;
+	double y = local.y - far.y;
+	x = x*x;
+	y = y*y;
+	return x+y;
 }
 
 void getNewCentroid(Cluster cluster, Point *newCentroid, Point *dataset){
@@ -40,12 +58,11 @@ void getNewCentroid(Cluster cluster, Point *newCentroid, Point *dataset){
 	if(totalElements == 0)
 		return;
 
-//#pragma omp paralle for reduction(+:aveA, aveB)
+#pragma omp parallel for private(i,dataSetIndex) reduction(+:aveX, aveY)
 	for(i=0; i<totalElements; i++){
 		dataSetIndex = clusterElements[i];
-		Point p = dataset[dataSetIndex];
-		aveX+=p.x;
-		aveY+=p.y;
+		aveX+=dataset[dataSetIndex].x;
+		aveY+=dataset[dataSetIndex].y;
 	}
 
 	newCentroid->x=aveX/totalElements;
@@ -87,9 +104,10 @@ void refreshCentroids(Cluster *clusters, int totalClusters, Point *dataset){
 }
 
 void cleanClusters(Cluster *clusters, int totalClusters){
-	int i,j;
-	int clusterElements = 0;
+	int i;//,j;
+	//int clusterElements = 0;
 	for(i=0; i<totalClusters; i++){
+		/*
 		clusterElements = clusters[i].totalElements;
 		if(clusterElements!=0){
 			for(j=0; j<clusterElements; j++){
@@ -97,6 +115,10 @@ void cleanClusters(Cluster *clusters, int totalClusters){
 			}
 			clusters[i].totalElements = 0;
 		}
+		*/
+		clusters[i].xSum = 0.0;
+		clusters[i].ySum = 0.0;
+		clusters[i].totalElements = 0;
 	}	
 }
 
@@ -142,14 +164,18 @@ int winnerCluster(Point point, Cluster *clusters, int totalClusters){
 	double x = point.x;
 	double y = point.y;
 	double distance = FLT_MAX, localdistance=0.0;
+	double distances[totalClusters];
 	int i,winner=0;
+
 	for(i=0; i<totalClusters; i++){
 		localdistance = getDistance(point,clusters[i].currentCentroid);
+
 		if(localdistance<distance){
 			distance = localdistance;
 			winner = i;
 		}
 	}
+	
 	return winner;
 }
 
@@ -163,12 +189,23 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 
 		for(i=0; i<totalElementsDataSet; i++){
 			winner = winnerCluster(dataset[i], clusters, totalClusters);
-			int *totalElements = &clusters[winner].totalElements;
-			clusters[winner].elements[*totalElements] = i;
-			*totalElements = *totalElements + 1;
+			//int *totalElements = &clusters[winner].totalElements;
+			//clusters[winner].elements[*totalElements] = i;
+			//*totalElements = *totalElements + 1;
+			clusters[winner].totalElements++;
+			clusters[winner].xSum += dataset[i].x;
+			clusters[winner].ySum += dataset[i].y;
 		}
 
-		refreshCentroids(clusters, totalClusters, dataset);
+		//refreshCentroids(clusters, totalClusters, dataset);
+		for(i=0; i<totalClusters; i++){
+			double x = clusters[i].xSum/clusters[i].totalElements;
+			double y = clusters[i].ySum/clusters[i].totalElements;
+			clusters[i].lastCentroid.x =  clusters[i].currentCentroid.x;
+			clusters[i].lastCentroid.y =  clusters[i].currentCentroid.y;
+			clusters[i].currentCentroid.x = x;
+			clusters[i].currentCentroid.y = y;
+		}
 		epochs++;
 		continueRunning = stopKmeans(clusters, totalClusters, epochs);
 	}
