@@ -1,5 +1,5 @@
 #define K 4				//Total expected clusters
-#define N 100000		//Total samples
+#define N 200000		//Total samples
 #define MAXVALUE 100	//Max random value
 #define EPOCHS 100000	//Max number of epochs
 
@@ -10,7 +10,7 @@ typedef struct{
 
 typedef struct{
 	int totalElements;
-	Point elements[N];
+	int elements[N];
 	Point lastCentroid;
 	Point currentCentroid;
 } Cluster;
@@ -19,14 +19,16 @@ typedef struct{
 void initializeElements(Point *elements, int totalElements);
 int comparePoints(Point a, Point b);
 double getDistance(Point local, Point far);
-void getMean(Point *elements, int totalElements, Point *newCentroid);
-void printElements(Point *elements, int totalElements);
+void getNewCentroid(Cluster cluster, Point *newCentroid, Point *dataset);
+void printElements(int *elements, int totalElements, Point *dataSet);
+int winnerCluster(Point point, Cluster *clusters, int totalClusters);
 
 //Clusters actions
 void initializeClusters(Cluster *clusters, int totalElements);
-void refreshCentroids(Cluster *clusters, int totalClusters);
+void refreshCentroids(Cluster *clusters, int totalClusters, Point *dataset);
 void cleanClusters(Cluster *clusters, int totalClusters);
-double printClusters(Cluster *clusters, int totalElements);
+void printClustersElements(Cluster *clusters, int totalElements, Point *dataSet);
+void printClustersNoElements(Cluster *clusters, int totalElements, Point *dataSet);
 
 //k-means algorithm actions
 int stopKmeans(Cluster *clusters, int totalClusters, int epochs);

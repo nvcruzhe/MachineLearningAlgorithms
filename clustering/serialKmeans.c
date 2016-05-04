@@ -3,6 +3,8 @@
 #include <time.h>
 #include <math.h>
 #include <sys/time.h>
+#include <omp.h>
+#include <float.h>
 
 #include "utils.h"
 #include "serialKmeans.h"
@@ -24,30 +26,37 @@ int comparePoints(Point a, Point b){
 }
 
 double getDistance(Point local, Point far){
-	double x = local.x - far.x;
-	double y = local.y - far.y;
-	double in = pow(x,2) + pow(y,2);
-	double distance =  sqrt(in);
-	return distance;
+	return sqrt(pow((local.x - far.x),2) + pow((local.y - far.y),2));
 }
 
-void getMean(Point *elements, int totalElements, Point *newCentroid){
+void getNewCentroid(Cluster cluster, Point *newCentroid, Point *dataset){
 	int i;
-	double x=0.0, y=0.0;
+	double aveX = 0;
+	double aveY = 0;
+	int totalElements = cluster.totalElements;
+	int *clusterElements = cluster.elements;
+	int dataSetIndex = 0;
+
+	if(totalElements == 0)
+		return;
+
+//#pragma omp paralle for reduction(+:aveA, aveB)
 	for(i=0; i<totalElements; i++){
-		x+=elements[i].x;
-		y+=elements[i].y;
+		dataSetIndex = clusterElements[i];
+		Point p = dataset[dataSetIndex];
+		aveX+=p.x;
+		aveY+=p.y;
 	}
-	x = x/totalElements;
-	y = y/totalElements;
-	newCentroid->x = x;
-	newCentroid->y = y;
+
+	newCentroid->x=aveX/totalElements;
+	newCentroid->y=aveY/totalElements;
 }
 
-void printElements(Point *elements, int totalElements){
-	int i;
+void printElements(int *elements, int totalElements, Point *dataSet){
+	int i,index;
 	for(i=0; i<totalElements; i++){
-		printf("%f,%f\n",elements[i].x, elements[i].y);
+		index = elements[i];
+		printf("P(%f,%f)\n", dataSet[index].x, dataSet[index].y);
 	}	
 }
 
@@ -58,17 +67,18 @@ void initializeClusters(Cluster *clusters, int totalElements){
 	for(i=0; i<totalElements; i++){
 		clusters[i].lastCentroid.x = 0.0;
 		clusters[i].lastCentroid.y = 0.0;
+		clusters[i].totalElements = 0;
 		clusters[i].currentCentroid.x = getRandomNumber(MAXVALUE);
 		clusters[i].currentCentroid.y = getRandomNumber(MAXVALUE);
-		clusters[i].totalElements = 0;
+		//printf("Cluster: %d, (%f,%f)\n", i, clusters[i].currentCentroid.x, clusters[i].currentCentroid.y);
 	}
 }
 
-void refreshCentroids(Cluster *clusters, int totalClusters){
+void refreshCentroids(Cluster *clusters, int totalClusters, Point *dataset){
 	int i;
 	for(i=0; i<totalClusters; i++){
 		Point newCentroid;
-		getMean(clusters[i].elements, clusters[i].totalElements, &newCentroid);
+		getNewCentroid(clusters[i], &newCentroid, dataset);
 		clusters[i].lastCentroid.x = clusters[i].currentCentroid.x;
 		clusters[i].lastCentroid.y = clusters[i].currentCentroid.y;
 		clusters[i].currentCentroid.x = newCentroid.x;
@@ -78,27 +88,38 @@ void refreshCentroids(Cluster *clusters, int totalClusters){
 
 void cleanClusters(Cluster *clusters, int totalClusters){
 	int i,j;
-	int totalElements = 0;
+	int clusterElements = 0;
 	for(i=0; i<totalClusters; i++){
-		totalElements = clusters[i].totalElements;
-		if(totalElements!=0){
-			for(j=0; j<totalElements; j++){
-				clusters[i].elements[j].x = 0.0;
-				clusters[i].elements[j].y = 0.0;
+		clusterElements = clusters[i].totalElements;
+		if(clusterElements!=0){
+			for(j=0; j<clusterElements; j++){
+				clusters[i].elements[j] = 0;
 			}
 			clusters[i].totalElements = 0;
 		}
 	}	
 }
 
-double printClusters(Cluster *clusters, int totalElements){
+
+void printClustersNoElements(Cluster *clusters, int totalElements, Point *dataSet){
 	int i = 0;
 	for(i=0; i<totalElements; i++){
 		printf("Cluster:%d, currentCentroid: (%f,%f) | lastCentroid:(%f,%f) , Total elements: %d\n",
 			i+1, clusters[i].currentCentroid.x, clusters[i].currentCentroid.y,
 			clusters[i].lastCentroid.x, clusters[i].lastCentroid.y,
 			clusters[i].totalElements);
-		//printElements(clusters[i].elements, clusters[i].totalElements);
+	}
+}
+
+
+void printClustersElements(Cluster *clusters, int totalElements, Point *dataSet){
+	int i = 0;
+	for(i=0; i<totalElements; i++){
+		printf("Cluster:%d, currentCentroid: (%f,%f) | lastCentroid:(%f,%f) , Total elements: %d\n",
+			i+1, clusters[i].currentCentroid.x, clusters[i].currentCentroid.y,
+			clusters[i].lastCentroid.x, clusters[i].lastCentroid.y,
+			clusters[i].totalElements);
+		printElements(clusters[i].elements, clusters[i].totalElements, dataSet);
 	}
 }
 
@@ -117,44 +138,42 @@ int stopKmeans(Cluster *clusters, int totalClusters, int epochs){
 	return 1;
 }
 
+int winnerCluster(Point point, Cluster *clusters, int totalClusters){
+	double x = point.x;
+	double y = point.y;
+	double distance = FLT_MAX, localdistance=0.0;
+	int i,winner=0;
+	for(i=0; i<totalClusters; i++){
+		localdistance = getDistance(point,clusters[i].currentCentroid);
+		if(localdistance<distance){
+			distance = localdistance;
+			winner = i;
+		}
+	}
+	return winner;
+}
+
 void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int totalClusters){
-	int i,j, winner, epochs, continueRunning;
+	int i,j,winner, epochs, continueRunning;
 	continueRunning = 1;
 	epochs=0;
 	while(continueRunning){
-		cleanClusters(clusters, totalClusters);
-		//TODO:
-		/*
-		* Es posible hacerlo de esta forma? Ya que en la forma que se agregan los elementos a los diferentes
-		* clusters, tenemos una seccion critica y el aumento del total de los elementos
-		*
-		* La otra forma seria, por cada cluster mandar a evaluar todos los elementos y ver si 
-		* entran en el cluster que los mando a llamar donde el numero de hilos seria igual al numero
-		* de clusters que deseamos encontrar.
-		*/
-		
+		if(epochs!=0)
+			cleanClusters(clusters, totalClusters);
 
 		for(i=0; i<totalElementsDataSet; i++){
-			double distance = getDistance(dataset[i], clusters[0].currentCentroid);
-			double distanceToCentroid = distance;
-			winner = 0;
-			for(j=1; j<totalClusters; j++){
-				distance = getDistance(dataset[i], clusters[j].currentCentroid);
-				if(distanceToCentroid > distance){
-					distanceToCentroid = distance;
-					winner = j;
-				}
-			}
+			winner = winnerCluster(dataset[i], clusters, totalClusters);
 			int *totalElements = &clusters[winner].totalElements;
-			clusters[winner].elements[*totalElements] = dataset[i];
+			clusters[winner].elements[*totalElements] = i;
 			*totalElements = *totalElements + 1;
 		}
 
-		refreshCentroids(clusters, K);
+		refreshCentroids(clusters, totalClusters, dataset);
 		epochs++;
-		continueRunning = stopKmeans(clusters, K, epochs);	
+		continueRunning = stopKmeans(clusters, totalClusters, epochs);
 	}
-	printClusters(clusters, K);
+
+	printClustersNoElements(clusters, totalClusters, dataset);
 	printf("continueRunning: %d, Epochs: %d\n", continueRunning, epochs);
 }
 
@@ -162,6 +181,9 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 * K-Means algorithm example
 *
 * Compile: gcc serialKmeans.c utils.c -o skm -lm
+* Compile parallel: gcc serialKmeans.c utils.c -o skm -lm -fopenmp -g -O0
+* Execute: export OMP_NUM_THREADS=X
+* gcc serialKmeans.c utils.c -o skm -fopenmp -lm  -Debug -openmp
 * Run: ./skm
 */
 int main(int argc, char *argv[]){
@@ -170,10 +192,12 @@ int main(int argc, char *argv[]){
 
 	Point samples[N];
 	Cluster clusters[K];
+	
 	initializeElements(samples, N);
 	initializeClusters(clusters, K);
+	
 	kmeans(samples, N, clusters, K);
-
+	
 	gettimeofday(&tval_after, NULL);
 	timersub(&tval_after, &tval_before, &tval_result);
 	printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
