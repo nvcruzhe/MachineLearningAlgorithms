@@ -2,6 +2,8 @@ vtune amplifier
 
 cl primosserial.c /Zi /Od /MDd /Debug /openmp
 
+-Zi -Od -MDd -Debug -openmp
+
 Bottom-up: para conocer cuales son las funciones que mas tiempo estan gastando
 Thread function Call stack
 
@@ -26,6 +28,7 @@ Threading analysis inspector and data races
 
 
 Intel Parallel Advisor helps programmers decide where to parallelize their code, and whether the resulting performance gain will be worth the effort
+vicco@Vicco-Ubuntu:/opt/intel/advisor_xe_2016/bin64$ ./advixe-gui
 
 Intel VTune Amplifier (formerly VTune Performance Analyzer) is a performance profiler that analyzes hotspots, concurrency and locks-and-waits.
 Inicializarlo:
