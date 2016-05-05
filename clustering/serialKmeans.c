@@ -108,23 +108,64 @@ int winnerCluster(Point point, Cluster *clusters, int totalClusters){
 
 void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int totalClusters, int *whichClusterIn){
 	int i,j,winner, epochs, continueRunning;
+
+	//Parallel start
+	int totalThreads;
+	int threadId;
+	//Parallel finish
+
 	continueRunning = 1;
 	epochs=0;
-	while(continueRunning){
-		if(epochs!=0)
-			cleanClusters(clusters, totalClusters, whichClusterIn);
 
+
+	#pragma omp parallel
+	{
+		totalThreads = omp_get_num_threads();
+		//printf("1: totalThreads: %d\n", totalThreads);
+	}
+	int totalElementsMatrix[totalClusters][totalThreads];
+	double sumXMatrix[totalClusters][totalThreads];
+	double sumYMatrix[totalClusters][totalThreads];
+	memset(totalElementsMatrix, 0, sizeof(totalElementsMatrix[0][0]) * totalClusters * totalThreads);
+	memset(sumXMatrix, 0, sizeof(sumXMatrix[0][0]) * totalClusters * totalThreads);
+	memset(sumYMatrix, 0, sizeof(sumYMatrix[0][0]) * totalClusters * totalThreads);
+
+	/*
+	while(continueRunning && epochs<3){
+		printf("::::::::::::::: ITERATION %d:::::::::::::::\n", epochs);
+	//*/
+	while(continueRunning){
+		if(epochs!=0){
+			cleanClusters(clusters, totalClusters, whichClusterIn);
+			memset(totalElementsMatrix, 0, sizeof(totalElementsMatrix[0][0]) * totalClusters * totalThreads);
+			memset(sumXMatrix, 0, sizeof(sumXMatrix[0][0]) * totalClusters * totalThreads);
+			memset(sumYMatrix, 0, sizeof(sumYMatrix[0][0]) * totalClusters * totalThreads);
+		}
+
+#pragma omp parallel for private(threadId, winner)
 		//Check which centroid is the nearest for the coordinate 
 		for(i=0; i<totalElementsDataSet; i++){
+			threadId = omp_get_thread_num();
 			winner = winnerCluster(dataset[i], clusters, totalClusters);
-			clusters[winner].totalElements++;
-			clusters[winner].xSum += dataset[i].x;
-			clusters[winner].ySum += dataset[i].y;
+			totalElementsMatrix[winner][threadId]++;
+			sumXMatrix[winner][threadId] += dataset[i].x;
+			sumYMatrix[winner][threadId] += dataset[i].y;
+			//printf("i:%d) W:%d | TID:%d | C:%d\n",i,winner,threadId, totalElementsMatrix[winner][threadId]);
 			whichClusterIn[i] = winner;
+		}
+
+		//Matrix reduction for totalElements, xSum, ySum
+		for(i=0; i<totalClusters; i++){
+			for(j=0; j<totalThreads; j++){
+				clusters[i].totalElements += totalElementsMatrix[i][j];
+				clusters[i].xSum += sumXMatrix[i][j];
+				clusters[i].ySum += sumYMatrix[i][j];
+			}
 		}
 
 		//Refresh and recalculate centroids
 		for(i=0; i<totalClusters; i++){
+			//printf("Cluster: %d total:%d\n",i, clusters[i].totalElements);
 			double x = clusters[i].xSum/clusters[i].totalElements;
 			double y = clusters[i].ySum/clusters[i].totalElements;
 			clusters[i].lastCentroid.x =  clusters[i].currentCentroid.x;

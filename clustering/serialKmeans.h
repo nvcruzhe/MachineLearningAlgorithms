@@ -1,7 +1,9 @@
-#define K 10				//Total expected clusters
+#define K 2				//Total expected clusters
 #define N 400000		//Total samples
+//#define N 50		//Total samples
 #define MAXVALUE 100	//Max random value
 #define EPOCHS 100000	//Max number of epochs
+
 
 typedef struct{
 	double x;
