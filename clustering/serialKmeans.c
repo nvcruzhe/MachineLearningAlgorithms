@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <sys/time.h>
+#include <omp.h>
+#include <float.h>
 
 #include "utils.h"
 #include "serialKmeans.h"
@@ -25,29 +28,9 @@ int comparePoints(Point a, Point b){
 double getDistance(Point local, Point far){
 	double x = local.x - far.x;
 	double y = local.y - far.y;
-	double in = pow(x,2) + pow(y,2);
-	double distance =  sqrt(in);
-	return distance;
-}
-
-void getMean(Point *elements, int totalElements, Point *newCentroid){
-	int i;
-	double x=0.0, y=0.0;
-	for(i=0; i<totalElements; i++){
-		x+=elements[i].x;
-		y+=elements[i].y;
-	}
-	x = x/totalElements;
-	y = y/totalElements;
-	newCentroid->x = x;
-	newCentroid->y = y;
-}
-
-void printElements(Point *elements, int totalElements){
-	int i;
-	for(i=0; i<totalElements; i++){
-		printf("%f,%f\n",elements[i].x, elements[i].y);
-	}	
+	x = x*x;
+	y = y*y;
+	return x+y;
 }
 
 //Clusters actions
@@ -57,47 +40,35 @@ void initializeClusters(Cluster *clusters, int totalElements){
 	for(i=0; i<totalElements; i++){
 		clusters[i].lastCentroid.x = 0.0;
 		clusters[i].lastCentroid.y = 0.0;
+		clusters[i].totalElements = 0;
 		clusters[i].currentCentroid.x = getRandomNumber(MAXVALUE);
 		clusters[i].currentCentroid.y = getRandomNumber(MAXVALUE);
+		//printf("Cluster: %d, (%f,%f)\n", i, clusters[i].currentCentroid.x, clusters[i].currentCentroid.y);
+	}
+}
+
+void cleanClusters(Cluster *clusters, int totalClusters, int *whichClusterIn){
+	int i;
+//#pragma omp parallel for private(i)
+	for(i=0; i<totalClusters; i++){
+		clusters[i].xSum = 0.0;
+		clusters[i].ySum = 0.0;
 		clusters[i].totalElements = 0;
 	}
-}
-
-void refreshCentroids(Cluster *clusters, int totalClusters){
-	int i;
-	for(i=0; i<totalClusters; i++){
-		Point newCentroid;
-		getMean(clusters[i].elements, clusters[i].totalElements, &newCentroid);
-		clusters[i].lastCentroid.x = clusters[i].currentCentroid.x;
-		clusters[i].lastCentroid.y = clusters[i].currentCentroid.y;
-		clusters[i].currentCentroid.x = newCentroid.x;
-		clusters[i].currentCentroid.y = newCentroid.y;
+//#pragma omp parallel for private(i)
+	for(i=0; i<N; i++){
+		whichClusterIn[i] = -1;
 	}
 }
 
-void cleanClusters(Cluster *clusters, int totalClusters){
-	int i,j;
-	int totalElements = 0;
-	for(i=0; i<totalClusters; i++){
-		totalElements = clusters[i].totalElements;
-		if(totalElements!=0){
-			for(j=0; j<totalElements; j++){
-				clusters[i].elements[j].x = 0.0;
-				clusters[i].elements[j].y = 0.0;
-			}
-			clusters[i].totalElements = 0;
-		}
-	}	
-}
 
-double printClusters(Cluster *clusters, int totalElements){
+void printClusters(Cluster *clusters, int totalElements, Point *dataSet){
 	int i = 0;
 	for(i=0; i<totalElements; i++){
 		printf("Cluster:%d, currentCentroid: (%f,%f) | lastCentroid:(%f,%f) , Total elements: %d\n",
 			i+1, clusters[i].currentCentroid.x, clusters[i].currentCentroid.y,
 			clusters[i].lastCentroid.x, clusters[i].lastCentroid.y,
 			clusters[i].totalElements);
-		//printElements(clusters[i].elements, clusters[i].totalElements);
 	}
 }
 
@@ -116,28 +87,98 @@ int stopKmeans(Cluster *clusters, int totalClusters, int epochs){
 	return 1;
 }
 
-void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int totalClusters){
-	int i,j, winner, epochs=0;
-	int continueRunning = 1;
-	while(continueRunning){
-		cleanClusters(clusters, totalClusters);
-		for(i=0; i<totalElementsDataSet; i++){
-			double distance = getDistance(dataset[i], clusters[0].currentCentroid);
-			winner = 0;
-			for(j=1; j<totalClusters; j++){
-				if(distance > getDistance(dataset[i], clusters[j].currentCentroid)){
-					distance = getDistance(dataset[i], clusters[j].currentCentroid);
-					winner = j;
-				}
-			}
-			clusters[winner].elements[clusters[winner].totalElements] = dataset[i];
-			clusters[winner].totalElements++;
+int winnerCluster(Point point, Cluster *clusters, int totalClusters){
+	double x = point.x;
+	double y = point.y;
+	double distance = FLT_MAX, localdistance=0.0;
+	double distances[totalClusters];
+	int i,winner=0;
+
+	for(i=0; i<totalClusters; i++){
+		localdistance = getDistance(point,clusters[i].currentCentroid);
+
+		if(localdistance<distance){
+			distance = localdistance;
+			winner = i;
 		}
-		refreshCentroids(clusters, K);
-		epochs++;
-		continueRunning = stopKmeans(clusters, K, epochs);	
 	}
-	printClusters(clusters, K);
+	
+	return winner;
+}
+
+void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int totalClusters, int *whichClusterIn){
+	int i,j,winner, epochs, continueRunning;
+
+	//Parallel start
+	int totalThreads;
+	int threadId;
+	//Parallel finish
+
+	continueRunning = 1;
+	epochs=0;
+
+
+	#pragma omp parallel
+	{
+		totalThreads = omp_get_num_threads();
+		//printf("1: totalThreads: %d\n", totalThreads);
+	}
+	int totalElementsMatrix[totalClusters][totalThreads];
+	double sumXMatrix[totalClusters][totalThreads];
+	double sumYMatrix[totalClusters][totalThreads];
+	memset(totalElementsMatrix, 0, sizeof(totalElementsMatrix[0][0]) * totalClusters * totalThreads);
+	memset(sumXMatrix, 0, sizeof(sumXMatrix[0][0]) * totalClusters * totalThreads);
+	memset(sumYMatrix, 0, sizeof(sumYMatrix[0][0]) * totalClusters * totalThreads);
+
+	/*
+	while(continueRunning && epochs<3){
+		printf("::::::::::::::: ITERATION %d:::::::::::::::\n", epochs);
+	//*/
+	while(continueRunning){
+		if(epochs!=0){
+			cleanClusters(clusters, totalClusters, whichClusterIn);
+			memset(totalElementsMatrix, 0, sizeof(totalElementsMatrix[0][0]) * totalClusters * totalThreads);
+			memset(sumXMatrix, 0, sizeof(sumXMatrix[0][0]) * totalClusters * totalThreads);
+			memset(sumYMatrix, 0, sizeof(sumYMatrix[0][0]) * totalClusters * totalThreads);
+		}
+
+#pragma omp parallel for private(threadId, winner)
+		//Check which centroid is the nearest for the coordinate 
+		for(i=0; i<totalElementsDataSet; i++){
+			threadId = omp_get_thread_num();
+			winner = winnerCluster(dataset[i], clusters, totalClusters);
+			totalElementsMatrix[winner][threadId]++;
+			sumXMatrix[winner][threadId] += dataset[i].x;
+			sumYMatrix[winner][threadId] += dataset[i].y;
+			//printf("i:%d) W:%d | TID:%d | C:%d\n",i,winner,threadId, totalElementsMatrix[winner][threadId]);
+			whichClusterIn[i] = winner;
+		}
+
+		//Matrix reduction for totalElements, xSum, ySum
+		for(i=0; i<totalClusters; i++){
+			for(j=0; j<totalThreads; j++){
+				clusters[i].totalElements += totalElementsMatrix[i][j];
+				clusters[i].xSum += sumXMatrix[i][j];
+				clusters[i].ySum += sumYMatrix[i][j];
+			}
+		}
+
+		//Refresh and recalculate centroids
+		for(i=0; i<totalClusters; i++){
+			//printf("Cluster: %d total:%d\n",i, clusters[i].totalElements);
+			double x = clusters[i].xSum/clusters[i].totalElements;
+			double y = clusters[i].ySum/clusters[i].totalElements;
+			clusters[i].lastCentroid.x =  clusters[i].currentCentroid.x;
+			clusters[i].lastCentroid.y =  clusters[i].currentCentroid.y;
+			clusters[i].currentCentroid.x = x;
+			clusters[i].currentCentroid.y = y;
+		}
+
+		epochs++;
+		continueRunning = stopKmeans(clusters, totalClusters, epochs);
+	}
+
+	printClusters(clusters, totalClusters, dataset);
 	printf("continueRunning: %d, Epochs: %d\n", continueRunning, epochs);
 }
 
@@ -145,12 +186,28 @@ void kmeans(Point *dataset, int totalElementsDataSet, Cluster *clusters, int tot
 * K-Means algorithm example
 *
 * Compile: gcc serialKmeans.c utils.c -o skm -lm
+* Compile parallel: gcc serialKmeans.c utils.c -o skm -lm -fopenmp -g -O0
+* Execute: export OMP_NUM_THREADS=X
+* gcc serialKmeans.c utils.c -o skm -fopenmp -lm  -Debug -openmp
 * Run: ./skm
 */
 int main(int argc, char *argv[]){
+	//Variables
+	struct timeval tval_before, tval_after, tval_result;
 	Point samples[N];
 	Cluster clusters[K];
+	int whichClusterIn[N];
+	
+	//Initialize variables
 	initializeElements(samples, N);
 	initializeClusters(clusters, K);
-	kmeans(samples, N, clusters, K);
+
+	//Start processing
+	gettimeofday(&tval_before, NULL);
+	kmeans(samples, N, clusters, K, whichClusterIn);
+	gettimeofday(&tval_after, NULL);
+
+	//Results
+	timersub(&tval_after, &tval_before, &tval_result);
+	printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 }
