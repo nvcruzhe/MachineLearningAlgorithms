@@ -1,0 +1,38 @@
+Parallel Inspector
+Threading analysis inspector and data races
+
+* Run Intel Parallel Inspector
+cd /opt/intel/inspector_xe_2016/bin64
+./inpecxe-gui
+
+Intel Parallel Advisor
+Helps programmers decide where to parallelize their code, and whether the resulting performance gain will be worth the effort
+also improves reliability by identifying memory errors and threading errors.
+
+* Run Intel Parallel Advisor
+cd /opt/intel/advisor_xe_2016/bin64
+./advixe-gui
+
+Intel VTune Amplifier
+Is a performance profiler that analyzes hotspots, concurrency and locks-and-waits.
+
+* Run VTune Amplifier
+cd /opt/intel/vtune_amplifier_xe_2016.2.0.444464/bin64
+./amplxe-gui
+
+* Analysis
+-Bottom-up: Helps to check which functions are spending much time in execution.
+P = Porcentaje del programa paralelizable
+Porcentaje Serial = 1 - P
+Tp = Porcentaje Serial + (P/#Procesadores)
+Aceleracion = A = 1/Tp
+
+To initialize any of the above programs part of parallel Amplifier in linux - Ubuntu:
+Change kernel variable:
+/proc/sys/kernel/yama
+echo 0 | sudo tee ptrace_scope 
+
+
+
+
+
