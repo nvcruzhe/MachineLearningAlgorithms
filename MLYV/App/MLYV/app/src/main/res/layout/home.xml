@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pointOfInterestPhoto"
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/inicio_banner"
+        android:paddingTop="60dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/phrase"
+        android:text="@string/phrase"
+        android:width="800dp"
+        android:textStyle="bold"
+        android:layout_below="@+id/pointOfInterestPhoto"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="30dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/author"
+        android:id="@+id/author"
+        android:layout_below="@+id/phrase"
+        android:layout_alignEnd="@+id/phrase" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/introduction"
+        android:width="900dp"
+        android:paddingStart="10dp"
+        android:text="@string/introduction"
+        android:paddingTop="20dp"
+        android:layout_below="@+id/author"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/continueReading"
+        android:id="@+id/keepReading"
+        android:height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="45dp" />
+
+
+</RelativeLayout>

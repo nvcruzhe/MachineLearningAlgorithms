@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">Mexico Lindo y Viajero</string>
+    <string name="home">Inicio</string>
+    <string name="history">Historia</string>
+    <string name="trasversalCut">Corte Esquematico</string>
+    <string name="photoGallery">Galeria de Fotos</string>
+    <string name="videoGallery">Video</string>
+    <string name="contact">Contacto</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="navigation_drawer_items_array">
+        <item>Inicio</item>
+        <item>Historia</item>
+        <item>Corte esquematico</item>
+        <item>Galeria de Fotos</item>
+        <item>Video</item>
+        <item>Contacto</item>
+    </string-array>
+
+    <!-- Home strings -->
+    <string name="phrase">Amo el canto del cenzontle pájaro de 400 voces, amo el color
+        del jade, y el enervante perfume de las flores, pero amo más a mi hermano, el hombre.</string>
+    <string name="author">Nezahualcoyotl</string>
+    <string name="introduction">El Palacio de Minería de la Ciudad de México es una de las obras maestras
+        de la arquitectura neoclásica en América. Fue diseñado y construido entre 1797 y 1813 por el escultor
+        y arquitecto español valenciano Manuel Tolsá, como sede del Real Seminario de Minería y Real Tribunal
+        de Minería y a petición de su director, el conocido minerólogo Fausto Delhuyar. Posteriormente
+        albergó a otras instituciones como la Universidad Nacional, la Escuela de Ingenieros, el Colegio
+        de Minas y el Instituto de Física de la Universidad Nacional Autónoma de México. En la actualidad
+        es un museo que pertenece a la Facultad de Ingeniería de la UNAM. Se ubica en la calle de Tacuba
+        frente a la Plaza Manuel Tolsá y frente a la estatua ecuestre de Carlos IV de España esculpida
+        también por Tolsá. ...</string>
+    <string name="continueReading">Continuar Leyendo</string>
+
+    <string name="info">Epoca Prehispanica
+Diversos autores han hecho hincapié en la gran significación de las especias y el oro en los destinos de América. Efectivamente, constituyeron un factor determinante en la historia de los descubrimientos, pero el contacto inicial con la riqueza americana -como se deduce de las cartas de Colón y por la rebeldía de su gente- fue desilusionante: el oro de las Antillas era escaso y pronto desapareció sin saciar la sed de los conquistadores por tan preciado metal. En sus últimos viajes, Colón tocó la costa del Darién, mas los europeos no lograron ver realizadas sus ambiciones de obtener el oro tan deseado.</string>
+
+    <string name="info1">Epoca Colonial
+Por un espejismo que padeció Europa durante mucho tiempo, los metales preciosos fueron considerados como raíces fundamentales de la riqueza. Si no los hubiese poseído en abundancia, el descubrimiento del Nuevo Mundo no hubiera entusiasmado tanto a los pueblos del Viejo Continente. Tras los metales preciosos vinieron los españoles a México y en su obtención puso luego la Colonia sus mayores esperanzas, las cuales fueron colmadas por la extraordinaria riqueza de sus minas argentíferas. Logróse la opulencia, pero con supeditación a un manantial inestable y corruptor. Las consecuencias de ello han sido padecidas por el país durante largo tiempo.</string>
+
+    <string name="info2">Real Seminario de Mineria
+Distintivo de esta época fue el empleo de políticos muy hábiles en las complejas tareas del gobiemo español; estadistas como los condes de Campomanes, de Aranda, de Floridablanca, así como el marqués de Sonora, José Gálvez, que tan de cerca conocería a la Nueva España y a quien se debe no poco de la creación del Real Tribunal de la Minería, constituyeron sin lugar a dudas el cuerpo de ministros mejor dotados de su tiempo y el haberlos llamado a colaborar con él a lo largo de los seis lustros de su reinado, es muestra del profundo conocimiento de los hombres que poseía Carlos III.
+La explotación minera en México se hacía dentro del marco del cuerpo legal recopilado en los días de Felipe II conocido como las "Ordenanzas del Nuevo Cuaderno", al que se habían agregado multitud de disposiciones, cédulas y bandos que hacían de su aplicación una nueva dificultad que añadir a las ya existentes; el espíritu de las citadas "Viejas Ordenanzas", como también se llamaban, en nada se ajustaba a las realidades americanas, amén de que la técnica, en las dos centurias que tenía de aplicarse, había avanzado prodigiosamente.
+Ya constituido el Real Tribunal, que realizaba una notable labor en el avío, fomento y desarrollo de la industria minera, faltaba satisfacer el Título XVIII de las Reales Ordenanzas, en lo concerniente a la fundación del Colegio Metálico.
+A la muerte de Don Joaquín Velázquez Cárdenas de León, con fecha 18 de julio de 1786 el rey nombró a Don Fausto de Elhúyar Director General del Real Cuerpo de Minería de México. Llegado a Nueva España dos años más tarde, tuvo que resolver apremiantes problemas que no le permitieron atender a la fundación del Seminario. Si bien el Tribunal había otorgado ya varios títulos profesionales, los primeros a Diego Guadalaxara Tello y a Manuel Velázquez de León en 1784, todavía bajo la dirección de don Joaquín Velázquez la necesidad de formar a la juventud estudiosa era imperiosa.</string>
+
+    <string name="info3">Construcción del Palacio
+Para realizar sus importantes actividades, el Tribunal de Minería necesitaba un lugar que le perteneciera. No existiendo un edificio adecuado para tal finalidad, ya que el alquilado en el Hospicio de San Nicolás nunca podría satisfacer los requerimientos que el funcionamiento de tan compleja institución exigía, se decidió comprar un solar y construir en él un albergue ex profeso. Casi en el extremo poniente de la ciudad, sobre la calzada de Tlacopac, se encontraba un gran terreno con modestas construcciones, que parecía apropiado. El Real Tribunal de la Minería que buscaba afanosamente el sitio a propósito para construir su edificio pronto se interesó en el citado solar llamado de Nilpantongo (el nombre correcto podría ser Milpantongo, "junto a la milpita", toponimia indígena acorde con el hecho de que en el solar se tuvieron siempre sembradíos junto a las pequeñas casas en él edificadas). A fines de 1791, don Fausto de Elhúyar juzgó el solar de Nilpantongo como el más adecuado para levantar su edificio, por lo que sugirió que se empezaran a elaborar los planos correspondientes. En oficio fechado el 13 de noviembre de ese año, pidió la anuencia del Tribunal para gestionar ante el virrey los permisos correspondientes. Al día siguiente, don Fausto escribió al Conde de Revillagigedo.</string>
+
+    <string name="info4">Ocupación del Palacio en 1811
+Condiciones de la minería en la Colonia
+Como dato importante desde el punto de vista del propósito para el cual fue construido el edificio, es conveniente consignar que el grado de adelanto de la obra en 1811 originó un auto del 20 de marzo, decretando que se practicara una visita al inmueble con objeto de ver la posibilidad de que los alumnos del Seminario se trasladaran al Palacio, abandonando la casona de las calles del Hospicio de San Nicolás.</string>
+
+    <string name="info5">Actividades académicas
+Al consumarse nuestra Independencia en 1821, sobrevienen grandes cambios en la estructura de las organizaciones de la naciente República, cambios a los cuales no podía escapar el seminario de Minería. Al promulgarse la Constitución de 1824, es necesario adaptar los estudios a los nuevos principios y el Tribunal solicita en 1825, se modifiquen tanto el plan de estudios como el gobierno interior y la economía del Colegio. El 30 de marzo de 1826, según lo consigna Santiago Ramírez, el rector y los catedráticos remiten al Tribunal el reglamento modificado, donde se hace notar que el curso se ampliará a cinco años, en vez de los cuatro de antes (pues se extendió la enseñanza de la Matemática y de la Física), en el siguiente orden: En el primer año, aritmética, álgebra elemental, trigonometría plana y esférica, aplicación del álgebra a la geometría; en el segundo año, secciones cónicas, cálculo infinitesimal, series, ecuaciones de grado superior, geometría práctica, subterránea y descriptiva: en el tercer año, física experimental, que comprende: dinámica, hidrodinámica, óptica, polarización, magnetismo, electricidad y elementos de cosmografía y cronología; en el cuarto año, química, reducida a la parte mineral, docimasia, que trata de los ensayes y metalurgia; en el quinto año, mineralogía, que comprende la oritognosia o conocimiento de los minerales, la geognosia o conocimiento de las montañas como criaderos de los fósiles y finalmente, el laboreo de minas.</string>
+
+    <string name="info6">Reforma Educativa de 1833
+El 21 de octubre de 1833 se crea la Dirección General de Instrucción Pública, presidida por el vicepresidente de la República (Valentín Gómez Farías). En el seno de esta Dirección nació el decreto que creó, el 26 de octubre de ese año, seis Establecimientos de Estudios Mayores, reformando trascendentalmente el sistema de enseñanza superior: dichos establecimientos fueron: el Primero de Estudios Preparatorios: el Segundo, de Estudios Ideológicos y Humanidades: el Tercero, de Ciencias Físicas y Matemáticas: el Cuarto, de Ciencias Medicas: el Quinto, de Jurisprudencia y el Sexto, de Ciencias Eclesiásticas.</string>
+
+    <string name="info7">Obras de restauración del Palacio de Minería
+Hasta 1954 en que la Facultad de Ingeniería inició su traslado a la Ciudad Universitaria, el Palacio de Minería fue sede de la ingeniería mexicana, pues ahí se instaló la primera escuela de ingeniería que dio origen a todas las que existen en el país. Sin embargo, aún después de que la Escuela Nacional de Ingenieros, hoy Facultad de Ingeniería, se trasladó a su nueva casa, el Palacio siguió prestando servicio a la Facultad, albergando algunos cursos, sirviendo de recinto para la realización de numerosos exámenes profesionales y, al mismo tiempo que era sede de algunas sociedades profesionales, utilizándose para reuniones gremiales. Todo esto en pequeña escala.
+    </string>
+</resources>
