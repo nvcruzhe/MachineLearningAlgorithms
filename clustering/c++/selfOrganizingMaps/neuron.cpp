@@ -100,7 +100,6 @@ void Neuron::setWeigths(vector<double> weigths){
 
 void Neuron::initializeWeights(){
 	for(int i=0; i<_totalWeights; i++){
-		//_weights[i] = Utils::getRandomDoubleNumber(0, 255);
 		_weights[i] = (double)rand() / (double)RAND_MAX;
 	}
 }

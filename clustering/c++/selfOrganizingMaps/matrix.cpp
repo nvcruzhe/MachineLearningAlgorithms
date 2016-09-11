@@ -42,8 +42,8 @@ void Matrix::updateWeightVector(double influence, double learningRate,
 	vector<double> oldWeights = neuron->getWeights();
 	updatedWeigths.resize(_totalWeights);
 	for(int i=0; i<_totalWeights; i++){
-		difference = (inputVector[i] - oldWeights[i]));
-		newWeight = oldWeights[i] + ((influence * learningRate) * difference;
+		difference = (inputVector[i] - oldWeights[i]);
+		newWeight = oldWeights[i] + ((influence * learningRate) * difference);
 		updatedWeigths[i] = newWeight;
 	}
 	_matrix[x][y]->setWeigths(updatedWeigths);

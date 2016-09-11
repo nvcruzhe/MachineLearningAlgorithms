@@ -107,19 +107,19 @@ void SelfOrganizingMaps::train(vector<double> inputVector){
 }
 //*/
 
-void SelfOrganizingMaps::train(vector<double> inputVector){
+void SelfOrganizingMaps::trainPlainCode(vector<double> inputVector){
 	if(_epochs > _maxEpochs){
 		return;
 	}
 
 	Neuron *currentNeuron = NULL;
-	double distanceToNeuron = 0.0;
+	double distanceToBMU = 0.0;
 	double influence = 0.0;
 	double distance = 0;
 	double winnerNeuronX = 0.0;
 	double winnerNeuronY = 0.0;
 	double gaussian = 0.0;
-	double closestDistance = (255.0 * 255.0) + (255.0 * 255.0) + (255.0 * 255.0);
+	double closestDistance = 3*(255.0 * 255.0);
 
 	// Getting BMU
 	for(int row=0; row<_size; row++){
@@ -130,7 +130,7 @@ void SelfOrganizingMaps::train(vector<double> inputVector){
 				winnerNeuronY = col;
 				closestDistance = distance;
 			}else if(distance == closestDistance){
-				if(Utils::getRandomDoubleNumber(0, 1) < 0.5){
+				if(Utils::getRandomDoubleNumber() < 0.5){
 					winnerNeuronX = row;
 					winnerNeuronY = col;
 				}
@@ -147,26 +147,25 @@ void SelfOrganizingMaps::train(vector<double> inputVector){
 	currenLearningRate = 1 - currenLearningRate;
 
 	// Update the BMU neuron
-	_matrix->updateWeightVector(1.0, currenLearningRate, inputVector, winnerNeuronX,
-		winnerNeuronY);
+	_matrix->updateWeightVector(1.0, currenLearningRate, inputVector,
+		winnerNeuronX, winnerNeuronY);
 
 	//Check which neurons should update its weight vector
-	int debug = 0;
 	Neuron *bmu = _matrix->getNeuron(winnerNeuronX, winnerNeuronY);
 	for(int row=0; row<_size; row++){
 		for(int col=0; col<_size; col++){
 			currentNeuron = _matrix->getNeuron(row, col);
-			distanceToNeuron = bmu->distanceToNeuron(currentNeuron);
+			distanceToBMU = bmu->distanceToNeuron(currentNeuron);
 			// The current neuron is going to be updated
-
-			// Get influence of the neuron based in its distance to BMU scie
 			
-			//influence = exp(-(distanceToNeuron/(10 - ((double)_epochs/10.0))));
-			influence = exp(-(distanceToNeuron/(_initialNeighbourhoodRadius - (_epochs/_radiusTimeConstant))));
+			// Get influence of the neuron based in its distance to BMU scie
+			influence = exp(-(distanceToBMU/(_initialNeighbourhoodRadius -
+				(_epochs/_radiusTimeConstant))));
+			
 			// Update neuron
-			_matrix->updateWeightVector(influence, currenLearningRate, inputVector, row, col);
+			_matrix->updateWeightVector(influence, currenLearningRate,
+				inputVector, row, col);
 		}
-		debug = 0;
 	}
 
 	_iterations++;
@@ -174,6 +173,68 @@ void SelfOrganizingMaps::train(vector<double> inputVector){
 		_epochs++;
 		_iterations = 0;
 		cout << "Epoch: " << _epochs << endl;
+	}
+}
+
+void SelfOrganizingMaps::trainSegmentedFunctions(vector<double> inputVector){
+	if(_epochs > _maxEpochs){
+		return;
+	}
+
+	Neuron *currentNeuron = NULL;
+	double distanceToBMU = 0.0;
+	double influence = 0.0;
+
+	Neuron *bmu = getBMU(inputVector);
+	
+	updateMatrixWeigths(bmu, inputVector);
+
+	_iterations++;
+	if(_iterations == _totalSamples){
+		_epochs++;
+		_iterations = 0;
+		cout << "Epoch: " << _epochs << endl;
+	}
+}
+
+void SelfOrganizingMaps::evaluateIndependentVector(vector<double> inputVector){
+	Neuron *bmu = getBMU(inputVector);
+
+	cout << "Input Vector:" << endl;
+	cout << inputVector[0] << " " << inputVector[1] << " " << inputVector[2] << endl;
+	cout << "BMU:" << endl;
+	bmu->info();
+	
+	double distanceToBMU = bmu->distanceToInputVector(inputVector);
+	cout << "BMU distance to input vector: " << distanceToBMU << endl;
+	int bmuX = bmu->getX();
+	int bmuY = bmu->getY();
+
+	if(((bmuX + 1 < _size) && (bmuX - 1 >= 0)) && ((bmuY + 1 < _size) && (bmuY - 1 >= 0))){
+		Neuron *upLeft = _matrix->getNeuron(bmuX - 1, bmuY - 1);
+		Neuron *up = _matrix->getNeuron(bmuX, bmuY - 1);
+		Neuron *upRight = _matrix->getNeuron(bmuX + 1, bmuY - 1);
+		Neuron *left = _matrix->getNeuron(bmuX - 1, bmuY);
+		Neuron *right = _matrix->getNeuron(bmuX + 1, bmuY);
+		Neuron *downLeft = _matrix->getNeuron(bmuX - 1, bmuY + 1);
+		Neuron *down = _matrix->getNeuron(bmuX, bmuY + 1);
+		Neuron *downRight = _matrix->getNeuron(bmuX + 1, bmuY + 1);
+
+		double distUpLeft =  upLeft->distanceToInputVector(inputVector);
+		double distUp = up->distanceToInputVector(inputVector);
+		double distUpRight = upRight->distanceToInputVector(inputVector);
+		double distLeft = left->distanceToInputVector(inputVector);
+		double distRight = right->distanceToInputVector(inputVector);
+		double distDownLeft = downLeft->distanceToInputVector(inputVector);
+		double distDown = down->distanceToInputVector(inputVector);
+		double distDownRight = downRight->distanceToInputVector(inputVector);
+
+		cout << "Distances to side Neurons of the BMU" << endl;
+		cout << distUpLeft << " " << distUp << " " << distUpRight << endl;
+		cout << distLeft << "--" << distanceToBMU << "-- " << distRight << endl;
+		cout << distDownLeft << " " << distDown << " " << distDownRight << endl; 
+	}else{
+		cout << "The BMU is in the borders" << endl;
 	}
 }
 
@@ -193,9 +254,25 @@ void SelfOrganizingMaps::display(){
 			glEnd();
 		}
 	}
+
+	/*
+	if(!bmuTestCases.empty()){
+		for(int i=0; i<bmuTestCases.size(); i++){
+			Neuron *bmu = bmuTestCases[i];
+			glColor3f(0,0,0);
+			glBegin(GL_QUADS);
+				glVertex3f(bmu->getX(), bmu->getY(), 0);			// upper left
+				glVertex3f(bmu->getX(), bmu->getY()-1, 0);			// lower left
+				glVertex3f(bmu->getX()+1, bmu->getY()-1, 0);		// lower right
+				glVertex3f(bmu->getX()+1, bmu->getY(), 0);			// upper right
+			glEnd();	
+		}
+	}
+	*/
 }
 
 void SelfOrganizingMaps::reset(){
+	bmuTestCases.clear();
 	_matrix =  new Matrix(_size, _totalWeigths);
 	_iterations = 0;
 	_epochs = 0;
@@ -228,4 +305,62 @@ double SelfOrganizingMaps::getCurrenLearningRate(){
 double SelfOrganizingMaps::getInfluence(double distanceToBMU, double radius){
 	double exponent = - ((distanceToBMU * distanceToBMU) / 2 * (radius * radius));
 	return exp(exponent);
+}
+
+Neuron* SelfOrganizingMaps::getBMU(vector<double> inputVector){
+	double distance = 0.0;
+	double closestDistance = 3*(255.0 * 255.0);
+	int winnerNeuronX = 0;
+	int winnerNeuronY = 0;
+	for(int row=0; row<_size; row++){
+		for(int col=0; col<_size; col++){
+			distance = _matrix->getNeuron(row, col)->distanceToInputVector(inputVector);
+			if(distance < closestDistance){
+				winnerNeuronX = row;
+				winnerNeuronY = col;
+				closestDistance = distance;
+			}else if(distance == closestDistance){
+				if(Utils::getRandomDoubleNumber() < 0.5){
+					winnerNeuronX = row;
+					winnerNeuronY = col;
+				}
+			}
+		}
+	}
+	return _matrix->getNeuron(winnerNeuronX, winnerNeuronY);
+}
+
+void SelfOrganizingMaps::updateMatrixWeigths(Neuron *bmu, vector<double> inputVector){
+	Neuron *currentNeuron = NULL;
+	double distanceToBMU = 0.0;
+	double influence = 0.0;
+
+	// Adjusting weigths of neurons
+	// Get current Learning Rate
+	double currenLearningRate = ((double)_epochs/_maxEpochs);
+	if(currenLearningRate >= 1){
+		currenLearningRate = 0.99;
+	}
+	currenLearningRate = 1 - currenLearningRate;
+
+	// Update the BMU neuron
+	_matrix->updateWeightVector(1.0, currenLearningRate, inputVector,
+		bmu->getX(), bmu->getY());
+
+	//Check which neurons should update its weight vector
+	for(int row=0; row<_size; row++){
+		for(int col=0; col<_size; col++){
+			currentNeuron = _matrix->getNeuron(row, col);
+			distanceToBMU = bmu->distanceToNeuron(currentNeuron);
+			// The current neuron is going to be updated
+			
+			// Get influence of the neuron based in its distance to BMU scie
+			influence = exp(-(distanceToBMU/(_initialNeighbourhoodRadius -
+				(_epochs/_radiusTimeConstant))));
+			
+			// Update neuron
+			_matrix->updateWeightVector(influence, currenLearningRate,
+				inputVector, row, col);
+		}
+	}
 }

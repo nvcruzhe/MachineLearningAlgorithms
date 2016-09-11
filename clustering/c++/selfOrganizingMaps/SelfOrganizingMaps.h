@@ -7,6 +7,7 @@
 #include <GL/glut.h>
 
 #include "matrix.h"
+#include "Tuple.h"
 
 using namespace std;
 
@@ -22,11 +23,15 @@ class SelfOrganizingMaps{
 		Matrix* getMatrix();
 
 		// Main functionality of the algorithm
-		void train(vector<double> inputVector);
+		void trainPlainCode(vector<double> inputVector);
+		void trainSegmentedFunctions(vector<double> inputVector);
 
 		// OpenGL needed functions
 		void display();
 		void reset();
+
+		// Testing cases
+		void evaluateIndependentVector(vector<double> inputVector);
 
 	private:
 		int _iterations;
@@ -40,10 +45,13 @@ class SelfOrganizingMaps{
 		double _radiusTimeConstant;
 		double _learningRateTimeConstant;
 		Matrix *_matrix;
+		vector<Neuron *> bmuTestCases;
 
 		// Methods
 		// Main functionality util  methods
 		double getNeighbourhoodRadius();
 		double getCurrenLearningRate();
 		double getInfluence(double distanceToBMU, double radius);
+		Neuron* getBMU(vector<double> inputVector);
+		void updateMatrixWeigths(Neuron *bmu, vector<double> inputVector);
 };
