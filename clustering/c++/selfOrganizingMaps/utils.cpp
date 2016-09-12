@@ -4,6 +4,16 @@ int Utils::getRandomDoubleNumber(){
     return (double)rand() / RAND_MAX;
 }
 
+void Utils::exportMatrixToFile(Matrix *matrix){
+	string fileName = Utils::buildFileName();
+	ofstream myfile;
+	myfile.open (fileName);
+	myfile << "Writing this to a file.\n";
+	myfile.close();
+}
+
+void Utils::importMatrixFromFile(char *filename){}
+
 vector<vector<double> > Utils::createColorDataSet(int dataSetSize, int totalWeigths){
 	vector<vector<double> > dataSet;
 	dataSet.resize(dataSetSize);
@@ -239,4 +249,33 @@ vector<vector<double> > Utils::createColorTestDataSet(){
 	dataSet[3][2] = 153;
 
 	return dataSet;
+}
+
+string Utils::currentTime(){
+	time_t now = time(0);
+	struct tm tstruct;
+	char buf[80];
+	tstruct = *localtime(&now);
+	strftime(buf, sizeof(buf), "%H:%M:%S", &tstruct);
+	return buf;
+}
+
+string Utils::currentDate(){
+	time_t now = time(0);
+	struct tm tstruct;
+	char buf[80];
+	tstruct = *localtime(&now);
+	strftime(buf, sizeof(buf), "%B %A ", &tstruct);
+	return buf;
+}
+
+string Utils::buildFileName(){
+	time_t t = time(0);
+	struct tm * now = localtime( & t );
+	int month = (now->tm_mon + 1);
+    int day = (now->tm_mday  + 1);
+    int year = (now->tm_year + 1900);
+    string fileName = to_string(year) + "-" + to_string(month) + "-" +
+		to_string(day) + "-" + Utils::currentTime() + ".txt";
+	return fileName;
 }

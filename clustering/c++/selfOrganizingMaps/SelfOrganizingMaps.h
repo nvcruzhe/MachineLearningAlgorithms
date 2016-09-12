@@ -1,3 +1,6 @@
+#ifndef SOM_H
+#define SOM_H
+
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -6,8 +9,8 @@
 #include <math.h>
 #include <GL/glut.h>
 
+#include "utils.h"
 #include "matrix.h"
-#include "Tuple.h"
 
 using namespace std;
 
@@ -55,3 +58,4 @@ class SelfOrganizingMaps{
 		Neuron* getBMU(vector<double> inputVector);
 		void updateMatrixWeigths(Neuron *bmu, vector<double> inputVector);
 };
+#endif

@@ -1,10 +1,11 @@
+#ifndef NEURON_H
+#define NEURON_H
+
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
 #include <time.h>
-
-#include "utils.h"
 
 using namespace std;
 
@@ -36,3 +37,4 @@ class Neuron{
 		// Methods
 		void initializeWeights();
 };
+#endif

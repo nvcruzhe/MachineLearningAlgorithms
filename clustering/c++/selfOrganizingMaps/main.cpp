@@ -5,6 +5,7 @@
 #include <GL/glut.h>
 
 #include "SelfOrganizingMaps.h"
+#include "utils.h"
 
 #define NEURON_NUM 1
 #define WIDTH 400
@@ -123,6 +124,9 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 		case 's':
 			if(training)
 				training = !training;
+			break;
+		case 'e':
+			Utils::exportMatrixToFile(som->getMatrix());
 			break;
 	}
 }
