@@ -198,8 +198,11 @@ void SelfOrganizingMaps::trainSegmentedFunctions(vector<double> inputVector){
 }
 
 void SelfOrganizingMaps::evaluateIndependentVector(vector<double> inputVector){
-	Neuron *bmu = getBMU(inputVector);
-
+	//Neuron *bmu = getBMU(inputVector);
+	cout << "A _bmuTestCases size = " << _bmuTestCases.size() << endl;
+	_bmuTestCases.insert ( pair<Neuron *,Neuron *>(getBMU(inputVector),getBMU(inputVector)));
+	cout << "B _bmuTestCases size = " << _bmuTestCases.size() << endl;
+	/*
 	cout << "Input Vector:" << endl;
 	cout << inputVector[0] << " " << inputVector[1] << " " << inputVector[2] << endl;
 	cout << "BMU:" << endl;
@@ -236,6 +239,7 @@ void SelfOrganizingMaps::evaluateIndependentVector(vector<double> inputVector){
 	}else{
 		cout << "The BMU is in the borders" << endl;
 	}
+	*/
 }
 
 // OpenGL needed functions
@@ -244,8 +248,12 @@ void SelfOrganizingMaps::display(){
 	vector<double> weigths;
 	for(int row=0; row<_size; row++){
 		for(int col=0; col<_size; col++){
-			weigths = _matrix->getNeuron(row, col)->getWeights();
-			glColor3f(weigths[0], weigths[1], weigths[2]);
+			if( _bmuTestCases.find( _matrix->getNeuron(row,col) ) == _bmuTestCases.end() ){
+				weigths = _matrix->getNeuron(row, col)->getWeights();
+				glColor3f(weigths[0], weigths[1], weigths[2]);
+			}else{
+				glColor3f(0,0,0);
+			}
 			glBegin(GL_QUADS);
 				glVertex3f(row, col, 0);			// upper left
 				glVertex3f(row, col-1, 0);			// lower left
@@ -272,7 +280,7 @@ void SelfOrganizingMaps::display(){
 }
 
 void SelfOrganizingMaps::reset(){
-	bmuTestCases.clear();
+	_bmuTestCases.clear();
 	_matrix =  new Matrix(_size, _totalWeigths);
 	_iterations = 0;
 	_epochs = 0;

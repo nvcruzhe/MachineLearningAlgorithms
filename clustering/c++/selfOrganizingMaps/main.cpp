@@ -99,13 +99,13 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 			break;
 		case '0':
 			cout << "0" << endl;
-			//102 178 255 Azul
+			//0 0 255 Azul
 			som->evaluateIndependentVector(testDataset[0]);
 			glutPostRedisplay();
 			break;
 		case '1':
 			cout << "1" << endl;
-			// 255 204 204 Rosita
+			// 255 0 0 Rojo
 			som->evaluateIndependentVector(testDataset[1]);
 			glutPostRedisplay();
 			break;
@@ -116,7 +116,7 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 			glutPostRedisplay();
 			break;
 		case '3':
-			// 204 255 153 Verde 
+			// 0 255 0 Verde 
 			cout << "3" << endl;
 			som->evaluateIndependentVector(testDataset[3]);
 			glutPostRedisplay();

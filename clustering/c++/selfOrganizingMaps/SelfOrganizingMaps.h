@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
+#include <map>
 #include <limits>
 #include <math.h>
 #include <GL/glut.h>
@@ -48,7 +49,7 @@ class SelfOrganizingMaps{
 		double _radiusTimeConstant;
 		double _learningRateTimeConstant;
 		Matrix *_matrix;
-		vector<Neuron *> bmuTestCases;
+		map<Neuron *, Neuron *> _bmuTestCases;
 
 		// Methods
 		// Main functionality util  methods

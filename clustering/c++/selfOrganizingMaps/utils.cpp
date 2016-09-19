@@ -242,14 +242,14 @@ vector<vector<double> > Utils::createColorTestDataSet(){
 	}
 
 	// Azul
-	dataSet[0][0] = 102;
-	dataSet[0][1] = 178;
+	dataSet[0][0] = 0;
+	dataSet[0][1] = 0;
 	dataSet[0][2] = 255;
 
-	// Rosita
+	// Rojo
 	dataSet[1][0] = 255;
-	dataSet[1][1] = 204;
-	dataSet[1][2] = 204;
+	dataSet[1][1] = 0;
+	dataSet[1][2] = 0;
 	
 	// Violeta
 	dataSet[2][0] = 204;
@@ -257,9 +257,9 @@ vector<vector<double> > Utils::createColorTestDataSet(){
 	dataSet[2][2] = 204;
 	
 	// Verde
-	dataSet[3][0] = 204;
+	dataSet[3][0] = 0;
 	dataSet[3][1] = 255;
-	dataSet[3][2] = 153;
+	dataSet[3][2] = 0;
 
 	return dataSet;
 }
