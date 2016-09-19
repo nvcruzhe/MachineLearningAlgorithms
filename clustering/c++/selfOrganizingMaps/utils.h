@@ -17,7 +17,7 @@ using namespace std;
 class Utils{
 	public:
 		static int getRandomDoubleNumber();
-		static void exportMatrixToFile(Matrix *matrix);
+		static void exportMatrixToFile(Matrix *matrix, int epochs);
 		static void importMatrixFromFile(char *filename);
 
 		// DataSets

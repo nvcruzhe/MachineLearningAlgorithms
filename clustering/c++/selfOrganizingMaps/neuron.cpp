@@ -49,6 +49,15 @@ void Neuron::info(){
 	cout << "\n";
 }
 
+string Neuron::exportNeuronWeights(){
+	string weigths = "[" + to_string(_weights[0]);
+	for(int i=1; i<_totalWeights; i++){
+		weigths += "," + to_string(_weights[i]);
+	}
+	weigths += "]";
+	return weigths;
+}
+
 /*
 * Gets the euclidean distance from any neuron to this neuron
 * This method is used to check if this neuron is going to be affected

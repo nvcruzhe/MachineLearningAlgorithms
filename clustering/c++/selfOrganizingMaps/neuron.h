@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <vector>
 #include <time.h>
+#include <string>
 
 using namespace std;
 
@@ -25,6 +26,7 @@ class Neuron{
 		void setWeigths(vector<double> weigths);
 
 		void info();
+		string exportNeuronWeights();
 		double distanceToNeuron(Neuron *neuron);
 		double distanceToInputVector(vector<double> inputVector);
 

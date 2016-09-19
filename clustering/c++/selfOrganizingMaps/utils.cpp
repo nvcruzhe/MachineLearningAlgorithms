@@ -4,12 +4,25 @@ int Utils::getRandomDoubleNumber(){
     return (double)rand() / RAND_MAX;
 }
 
-void Utils::exportMatrixToFile(Matrix *matrix){
+void Utils::exportMatrixToFile(Matrix *matrix,int epochs){
 	string fileName = Utils::buildFileName();
-	ofstream myfile;
-	myfile.open (fileName);
-	myfile << "Writing this to a file.\n";
-	myfile.close();
+	ofstream file;
+	file.open (fileName);
+	int matrixSize = matrix->getSize();
+	file << matrixSize;
+	file << "\n";
+	file << epochs;
+	file << "\n";
+	for(int row=0; row<matrixSize; row++){
+		string line = matrix->getNeuron(row, 0)->exportNeuronWeights();
+		for(int col=1; col<matrixSize; col++){
+			line += "-" + matrix->getNeuron(row, col)->exportNeuronWeights();
+		}
+		line += "\n";
+		file << line;
+	}
+	file.close();
+	cout << "Se ha terminado de guardar el entrenamiento" << endl;
 }
 
 void Utils::importMatrixFromFile(char *filename){}
@@ -275,7 +288,7 @@ string Utils::buildFileName(){
 	int month = (now->tm_mon + 1);
     int day = (now->tm_mday  + 1);
     int year = (now->tm_year + 1900);
-    string fileName = to_string(year) + "-" + to_string(month) + "-" +
+    string fileName = to_string(year) + "." + to_string(month) + "." +
 		to_string(day) + "-" + Utils::currentTime() + ".txt";
 	return fileName;
 }

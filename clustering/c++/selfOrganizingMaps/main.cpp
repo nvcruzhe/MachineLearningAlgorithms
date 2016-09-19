@@ -126,7 +126,7 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 				training = !training;
 			break;
 		case 'e':
-			Utils::exportMatrixToFile(som->getMatrix());
+			Utils::exportMatrixToFile(som->getMatrix(), som->getEpochs());
 			break;
 	}
 }
