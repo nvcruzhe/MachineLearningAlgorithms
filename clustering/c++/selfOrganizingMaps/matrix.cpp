@@ -47,6 +47,7 @@ void Matrix::updateWeightVector(double influence, double learningRate,
 		updatedWeigths[i] = newWeight;
 	}
 	_matrix[x][y]->setWeigths(updatedWeigths);
+	_matrix[x][y]->setNeuronColor(updatedWeigths);
 }
 
 void Matrix::printMatrix(){

@@ -3,19 +3,23 @@
 Neuron::Neuron(int x, int y, int totalWeights) : _x(x), _y(y),
 	_totalWeights(totalWeights){
 	_weights.resize(_totalWeights);
-	initializeWeights();
+	_neuronColor = new RGB();
+	initializeNeuron();
 }
 
 Neuron::Neuron(int x, int y, vector<double> weigths) :
 	_x(x), _y(y){
 		_totalWeights = weigths.size();
 		_weights.resize(_totalWeights);
+		_neuronColor = new RGB();
 		for(int i = 0; i < _totalWeights; i++){
 			_weights[i] = weigths[i];
 		}
 }
 
-Neuron::~Neuron(){}
+Neuron::~Neuron(){
+	delete _neuronColor;
+}
 
 int Neuron::getX(){
 	return _x;
@@ -33,12 +37,20 @@ vector<double> Neuron::getWeights(){
 	return _weights;
 }
 
+RGB *Neuron::getNeuronColor(){
+	return _neuronColor;
+}
+
 void Neuron::setX(int x){
 	_x = x;
 }
 
 void Neuron::setY(int y){
 	_y = y;
+}
+
+void Neuron::setNeuronColor(double red, double green, double blue){
+	_neuronColor->setRGB(red, green, blue);
 }
 
 void Neuron::info(){
@@ -105,10 +117,21 @@ void Neuron::setWeigths(vector<double> weigths){
 	}
 }
 
+void Neuron::setNeuronColor(vector<double> rgb){
+	if(_totalWeights>=3){
+		_neuronColor->setRGB(rgb[0], rgb[1], rgb[2]);
+	}
+}
+
 // Private methods
 
-void Neuron::initializeWeights(){
+void Neuron::initializeNeuron(){
 	for(int i=0; i<_totalWeights; i++){
 		_weights[i] = (double)rand() / (double)RAND_MAX;
+	}
+
+	// Setting neuron initial color
+	if(_totalWeights >= 3){
+		_neuronColor->setRGB(_weights[0], _weights[1], _weights[2]);
 	}
 }

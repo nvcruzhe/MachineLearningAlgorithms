@@ -27,11 +27,13 @@ class SelfOrganizingMaps{
 		Matrix* getMatrix();
 
 		// Main functionality of the algorithm
+		void train(vector<double> inputVector);
 		void trainPlainCode(vector<double> inputVector);
 		void trainSegmentedFunctions(vector<double> inputVector);
 
 		// OpenGL needed functions
-		void display();
+		void displayUsingWeigths();
+		void displayUsingNeuronColor();
 		void reset();
 
 		// Testing cases

@@ -8,6 +8,8 @@
 #include <time.h>
 #include <string>
 
+#include "RGB.h"
+
 using namespace std;
 
 class Neuron{
@@ -20,10 +22,13 @@ class Neuron{
 		int getY();
 		int getTotalWeights();
 		vector<double> getWeights();
+		RGB *getNeuronColor();
 
 		void setX(int x);
 		void setY(int y);
 		void setWeigths(vector<double> weigths);
+		void setNeuronColor(double red, double green, double blue);
+		void setNeuronColor(vector<double> rgb);
 
 		void info();
 		string exportNeuronWeights();
@@ -35,8 +40,9 @@ class Neuron{
 		int _y;
 		int _totalWeights;
 		vector<double> _weights;
+		RGB *_neuronColor;
 
 		// Methods
-		void initializeWeights();
+		void initializeNeuron();
 };
 #endif

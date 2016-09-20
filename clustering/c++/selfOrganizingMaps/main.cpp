@@ -72,7 +72,7 @@ void display(){
 	gluLookAt(50,50,200, 50,50,0, 0,1,0);
 
 	// Draw the current map
-	som->display();
+	som->displayUsingNeuronColor();
 
 	// Draw to screen
 	glutSwapBuffers();
