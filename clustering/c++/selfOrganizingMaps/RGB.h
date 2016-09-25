@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <vector>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ class RGB{
 		double getRed(){return _red;}
 		double getGreen(){return _green;}
 		double getBlue(){return _blue;}
+		vector <double> rgbToVector();
 	private:
 		double _red, _green, _blue;
 };

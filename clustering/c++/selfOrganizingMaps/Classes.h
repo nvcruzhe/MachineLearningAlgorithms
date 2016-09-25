@@ -33,10 +33,22 @@ class Utils{
 		// DataSets
 		static vector<vector<double> > createColorDataSet(int dataSetSize, int totalWeigths);
 		static vector<vector<double> > createColorTestDataSet();
-		static vector<RGB* > createBlueColorDataSet();
-		static vector<RGB* > createRedColorDataSet();
-		static vector<RGB* > createGreenColorDataSet();
-		static vector<RGB* > createYellowColorDataSet();
+
+		// Build Matrix Datasets
+		static vector<RGB* > createBlueColorBuildMatrixDataSet();
+		static vector<RGB* > createRedColorBuildMatrixDataSet();
+		static vector<RGB* > createGreenColorBuildMatrixDataSet();
+		static vector<RGB* > createYellowColorBuildMatrixDataSet();
+		static vector<RGB* > createMultipleColorBuildMatrixDataSet();
+
+		// Train Matrix Datasets
+		static vector<RGB* > createBlueColorTrainMatrixDataSet();
+		static vector<RGB* > createRedColorTrainMatrixDataSet();
+		static vector<RGB* > createGreenColorTrainMatrixDataSet();
+		static vector<RGB* > createYellowColorTrainMatrixDataSet();
+		static vector<RGB* > createMultipleColorTrainMatrixDataSet();
+
+		// Test BMU on Matrix Datasets
 
 		// Time functions
 		static string currentTime();
@@ -49,9 +61,10 @@ class Utils{
 class SelfOrganizingMaps{
 	public:
 		SelfOrganizingMaps(int size, int totalWeights, int maxEpochs,
-			double learningRate);
+			double learningRate, int totalSamples);
 		SelfOrganizingMaps(int size, int totalWeights,
-			int maxEpochs, double initialLearningRate, vector<RGB* > dataSet);
+			int maxEpochs, double initialLearningRate, vector<RGB* > dataSet,
+			int totalSamples);
 		~SelfOrganizingMaps();
 		void reConstructSelfOrganizingMap(int size, int totalWeights,
 			int maxEpochs, double initialLearningRate, int epochs);
@@ -74,6 +87,7 @@ class SelfOrganizingMaps{
 		void train(vector<double> inputVector);
 		void trainPlainCode(vector<double> inputVector);
 		void trainSegmentedFunctions(vector<double> inputVector);
+		void trainSegmentedFunctions(RGB* inputVector);
 		double getCurrenLearningRate();
 
 		// OpenGL needed functions
