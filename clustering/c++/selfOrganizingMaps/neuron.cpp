@@ -9,12 +9,28 @@ Neuron::Neuron(int x, int y, int totalWeights) : _x(x), _y(y),
 
 Neuron::Neuron(int x, int y, vector<double> weigths) :
 	_x(x), _y(y){
-		_totalWeights = weigths.size();
-		_weights.resize(_totalWeights);
-		_neuronColor = new RGB();
-		for(int i = 0; i < _totalWeights; i++){
-			_weights[i] = weigths[i];
-		}
+	_totalWeights = weigths.size();
+	_weights.resize(_totalWeights);
+	_neuronColor = new RGB();
+
+	for(int i = 0; i < _totalWeights; i++){
+		_weights[i] = weigths[i];
+	}
+
+	// Setting neuron initial color
+	if(_totalWeights >= 3){
+		_neuronColor->setRGB(_weights[0], _weights[1], _weights[2]);
+	}
+}
+
+Neuron::Neuron(int x, int y, int totalWeights, RGB* rgb) :
+	_x(x), _y(y), _totalWeights(totalWeights){
+	_weights.resize(totalWeights);
+	_neuronColor = rgb;
+
+	_weights[0] = rgb->getRed();
+	_weights[1] = rgb->getGreen();
+	_weights[2] = rgb->getBlue();
 }
 
 Neuron::~Neuron(){
@@ -51,6 +67,10 @@ void Neuron::setY(int y){
 
 void Neuron::setNeuronColor(double red, double green, double blue){
 	_neuronColor->setRGB(red, green, blue);
+}
+
+void Neuron::setRGB(RGB *rgb){
+	_neuronColor = rgb;
 }
 
 void Neuron::info(){

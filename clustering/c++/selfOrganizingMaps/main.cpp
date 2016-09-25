@@ -16,7 +16,7 @@
 
 using namespace std;
 
-// OpenGlL methods
+// OpenGl methods
 void display(void);
 void reshape(int width, int height);
 void keyboard(unsigned char key, int x, int y);
@@ -26,23 +26,62 @@ void init();
 // Global variables
 SelfOrganizingMaps *som;
 bool training;
-vector<vector<double> > dataSet;
+vector<vector<double> > trainingDataSet;
 vector<vector<double> > testDataset;
+vector<RGB* > initializationDataSet;
 int _argc;
+int dataSetType;
 char *_fileName;
 
 int main(int argc, char **argv){
-	// Check if argv has more than one argument
-
+	// Setting global variable for more control
 	_argc = argc;
-	if(argc > 1){
-		_fileName = argv[1];
+
+	// Check if argv has more than one argument
+	// 0 program name
+	// 1 select matrix color formation, dataSet for training, dataSet for evaluation
+	// 2 file to import matrix
+	if(argc < 2){
+		cout << "se requiere indicar un dataset para el correcto funcionamiento" << endl;
+		return 0;
+	}
+
+	// Get dataSetType
+	dataSetType = atoi(argv[1]);
+
+	// Set file name for importing trained matrix
+	if(argc == 3){
+		_fileName = argv[2];
 	}
 
 	// Algorithm initialization
-	dataSet = Utils::createColorDataSet(DATASETSIZE, TOTALWEIGHTS);
-	testDataset = Utils::createColorTestDataSet(); 
-	som = new SelfOrganizingMaps(SIZE, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE);
+	switch(dataSetType){
+		// Many colors dataset
+		case 1:
+			trainingDataSet = Utils::createColorDataSet(DATASETSIZE, TOTALWEIGHTS);
+			testDataset = Utils::createColorTestDataSet();
+			som = new SelfOrganizingMaps(SIZE, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE);
+			break;
+
+		// Blue colors dataset
+		case 2:
+			initializationDataSet = Utils::createBlueColorDataSet();
+			som = new SelfOrganizingMaps(SIZE, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, initializationDataSet);
+			break;
+		case 3:
+			initializationDataSet = Utils::createRedColorDataSet();
+			som = new SelfOrganizingMaps(SIZE, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, initializationDataSet);
+			break;
+		case 4:
+			initializationDataSet = Utils::createGreenColorDataSet();
+			som = new SelfOrganizingMaps(SIZE, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, initializationDataSet);
+			break;
+		case 5:
+			initializationDataSet = Utils::createYellowColorDataSet();
+			som = new SelfOrganizingMaps(SIZE, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, initializationDataSet);
+			break;
+	}
+	
 	training = false;
 
 	// Open GL
@@ -66,7 +105,6 @@ int main(int argc, char **argv){
 
 	// Release memory
 	delete som;
-
 	return 0;
 }
 
@@ -153,7 +191,7 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 void idle(void){
 	if (training && (som->getEpochs() < MAXEPOCHS)){
 		int randInput = rand() % DATASETSIZE;
-		som->trainSegmentedFunctions(dataSet[randInput]);
+		som->trainSegmentedFunctions(trainingDataSet[randInput]);
 		glutPostRedisplay();
  	}
 }

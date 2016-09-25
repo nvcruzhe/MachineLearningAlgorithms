@@ -33,8 +33,16 @@ class Utils{
 		// DataSets
 		static vector<vector<double> > createColorDataSet(int dataSetSize, int totalWeigths);
 		static vector<vector<double> > createColorTestDataSet();
+		static vector<RGB* > createBlueColorDataSet();
+		static vector<RGB* > createRedColorDataSet();
+		static vector<RGB* > createGreenColorDataSet();
+		static vector<RGB* > createYellowColorDataSet();
+
+		// Time functions
 		static string currentTime();
 		static string currentDate();
+
+		// Others
 		static string buildFileName();
 };
 
@@ -42,6 +50,8 @@ class SelfOrganizingMaps{
 	public:
 		SelfOrganizingMaps(int size, int totalWeights, int maxEpochs,
 			double learningRate);
+		SelfOrganizingMaps(int size, int totalWeights,
+			int maxEpochs, double initialLearningRate, vector<RGB* > dataSet);
 		~SelfOrganizingMaps();
 		void reConstructSelfOrganizingMap(int size, int totalWeights,
 			int maxEpochs, double initialLearningRate, int epochs);

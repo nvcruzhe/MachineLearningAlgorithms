@@ -5,6 +5,11 @@ Matrix::Matrix(int size, int totalWeights) : _size(size),
 	initializeMatrix();
 }
 
+Matrix::Matrix(int size, int totalWeights, vector<RGB*> dataSet) :
+	_size(size), _totalWeights(totalWeights), _totalNeurons(size * size){
+	initializeMatrix(dataSet);
+}
+
 Matrix::~Matrix(){
 	for(int row=0; row < _size; row++){
 		for(int col=0; col < _size; col++){
@@ -64,6 +69,7 @@ void Matrix::printMatrix(){
 }
 
 // Private methods
+// Initialize the matrix with random values of colors
 void Matrix::initializeMatrix(){
 	_matrix.resize(_size);
 	for(int i=0; i<_size; i++){
@@ -74,6 +80,29 @@ void Matrix::initializeMatrix(){
 	for(int row=0; row < _size; row++){
 		for(int col=0; col < _size; col++){
 			Neuron *neuron = new Neuron(row, col, _totalWeights);
+			_matrix[row][col] = neuron;
+		}
+	}
+}
+
+// Initializa the matrix from a dataSet, selecting randomly the index
+// of the dataSet to be uploaded to the matrix
+void Matrix::initializeMatrix(vector<RGB*> dataSet){
+	_matrix.resize(_size);
+	for(int i=0; i<_size; i++){
+		_matrix[i].resize(_size);
+	}
+
+	int dataSetSize = dataSet.size();
+	int dataSetIndex = 0;
+
+	srand (time(0));
+	// Initiliazing neurons randomly
+	for(int row=0; row < _size; row++){
+		for(int col=0; col < _size; col++){
+			dataSetIndex = rand() % dataSetSize;
+			//cout << dataSetIndex<<": "<< dataSet[dataSetIndex][0] << "," << dataSet[dataSetIndex][1] << "," << dataSet[dataSetIndex][2] << endl; 
+			Neuron *neuron = new Neuron(row, col, _totalWeights, dataSet[dataSetIndex]);
 			_matrix[row][col] = neuron;
 		}
 	}

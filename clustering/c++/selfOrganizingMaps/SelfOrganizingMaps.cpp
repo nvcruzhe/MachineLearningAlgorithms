@@ -11,6 +11,18 @@ SelfOrganizingMaps::SelfOrganizingMaps(int size, int totalWeights,
 	_learningRateTimeConstant = _maxEpochs/log(_initialLearningRate);
 }
 
+SelfOrganizingMaps::SelfOrganizingMaps(int size, int totalWeights,
+	int maxEpochs, double initialLearningRate, vector<RGB* > dataSet):
+	_iterations(0), _size(size), _totalWeigths(totalWeights),
+	_maxEpochs(maxEpochs),
+	_epochs(0), _initialLearningRate(initialLearningRate),
+	_initialNeighbourhoodRadius(size/2){
+	_matrix =  new Matrix(_size, _totalWeigths, dataSet);
+	_radiusTimeConstant = _maxEpochs/log(_initialNeighbourhoodRadius);
+	_learningRateTimeConstant = _maxEpochs/log(_initialLearningRate);
+}
+
+
 SelfOrganizingMaps::~SelfOrganizingMaps(){
 	delete _matrix;
 }

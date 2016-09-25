@@ -305,6 +305,228 @@ vector<vector<double> > Utils::createColorTestDataSet(){
 	return dataSet;
 }
 
+vector<RGB* > Utils::createBlueColorDataSet(){
+	vector<RGB* > colorDataSet;
+	colorDataSet.resize(36);
+
+	colorDataSet[0] = new RGB((9/(double)255),(28/(double)255),(87/(double)255));
+	colorDataSet[1] = new RGB((24/(double)255),(41/(double)255),(88/(double)255));
+	colorDataSet[2] = new RGB((40/(double)255),(62/(double)255),(102/(double)255));
+	colorDataSet[3] = new RGB((60/(double)255),(92/(double)255),(126/(double)255));
+	colorDataSet[4] = new RGB((78/(double)255),(111/(double)255),(135/(double)255));
+	colorDataSet[5] = new RGB((96/(double)255),(124/(double)255),(141/(double)255));
+	colorDataSet[6] = new RGB((123/(double)255),(156/(double)255),(169/(double)255));
+	colorDataSet[7] = new RGB((143/(double)255),(172/(double)255),(180/(double)255));
+	colorDataSet[8] = new RGB((174/(double)255),(194/(double)255),(198/(double)255));
+	colorDataSet[9] = new RGB((8/(double)255),(96/(double)255),(168/(double)255));
+	colorDataSet[10] = new RGB((45/(double)255),(114/(double)255),(178/(double)255));
+	colorDataSet[11] = new RGB((80/(double)255),(133/(double)255),(188/(double)255));
+	colorDataSet[12] = new RGB((104/(double)255),(149/(double)255),(197/(double)255));
+	colorDataSet[13] = new RGB((128/(double)255),(166/(double)255),(206/(double)255));
+	colorDataSet[14] = new RGB((166/(double)255),(189/(double)255),(219/(double)255));
+	colorDataSet[15] = new RGB((191/(double)255),(209/(double)255),(229/(double)255));
+	colorDataSet[16] = new RGB((217/(double)255),(229/(double)255),(240/(double)255));
+	colorDataSet[17] = new RGB((242/(double)255),(242/(double)255),(248/(double)255));
+	colorDataSet[18] = new RGB((7/(double)255),(87/(double)255),(152/(double)255));
+	colorDataSet[19] = new RGB((40/(double)255),(103/(double)255),(160/(double)255));
+	colorDataSet[20] = new RGB((72/(double)255),(120/(double)255),(170/(double)255));
+	colorDataSet[21] = new RGB((99/(double)255),(141/(double)255),(187/(double)255));
+	colorDataSet[22] = new RGB((121/(double)255),(158/(double)255),(196/(double)255));
+	colorDataSet[23] = new RGB((157/(double)255),(179/(double)255),(208/(double)255));
+	colorDataSet[24] = new RGB((185/(double)255),(202/(double)255),(222/(double)255));
+	colorDataSet[25] = new RGB((210/(double)255),(221/(double)255),(233/(double)255));
+	colorDataSet[26] = new RGB((234/(double)255),(235/(double)255),(240/(double)255));
+	colorDataSet[27] = new RGB((6/(double)255),(77/(double)255),(135/(double)255));
+	colorDataSet[28] = new RGB((36/(double)255),(91/(double)255),(142/(double)255));
+	colorDataSet[29] = new RGB((64/(double)255),(106/(double)255),(151/(double)255));
+	colorDataSet[30] = new RGB((88/(double)255),(127/(double)255),(167/(double)255));
+	colorDataSet[31] = new RGB((109/(double)255),(141/(double)255),(175/(double)255));
+	colorDataSet[32] = new RGB((141/(double)255),(161/(double)255),(186/(double)255));
+	colorDataSet[33] = new RGB((172/(double)255),(188/(double)255),(207/(double)255));
+	colorDataSet[34] = new RGB((195/(double)255),(206/(double)255),(217/(double)255));
+	colorDataSet[35] = new RGB((218/(double)255),(219/(double)255),(224/(double)255));
+
+	return colorDataSet;
+}
+
+vector<RGB* > Utils::createRedColorDataSet(){
+	vector<RGB* > colorDataSet;
+	colorDataSet.resize(36);
+	
+	colorDataSet[0] = new RGB((230/(double)255),(0/(double)255),(0/(double)255));
+	colorDataSet[1] = new RGB((228/(double)255),(160/(double)255),(136/(double)255));
+	colorDataSet[2] = new RGB((205/(double)255),(78/(double)255),(55/(double)255));
+	colorDataSet[3] = new RGB((161/(double)255),(0/(double)255),(0/(double)255));
+	colorDataSet[4] = new RGB((182/(double)255),(128/(double)255),(109/(double)255));
+	colorDataSet[5] = new RGB((202/(double)255),(82/(double)255),(61/(double)255));
+	colorDataSet[6] = new RGB((229/(double)255),(38/(double)255),(23/(double)255));
+	colorDataSet[7] = new RGB((228/(double)255),(184/(double)255),(165/(double)255));
+	colorDataSet[8] = new RGB((205/(double)255),(100/(double)255),(75/(double)255));
+	colorDataSet[9] = new RGB((160/(double)255),(27/(double)255),(16/(double)255));
+	colorDataSet[10] = new RGB((182/(double)255),(147/(double)255),(132/(double)255));
+	colorDataSet[11] = new RGB((202/(double)255),(106/(double)255),(84/(double)255));
+	colorDataSet[12] = new RGB((228/(double)255),(63/(double)255),(41/(double)255));
+	colorDataSet[13] = new RGB((229/(double)255),(209/(double)255),(197/(double)255));
+	colorDataSet[14] = new RGB((205/(double)255),(122/(double)255),(97/(double)255));
+	colorDataSet[15] = new RGB((160/(double)255),(44/(double)255),(29/(double)255));
+	colorDataSet[16] = new RGB((195/(double)255),(178/(double)255),(168/(double)255));
+	colorDataSet[17] = new RGB((202/(double)255),(129/(double)255),(107/(double)255));
+	colorDataSet[18] = new RGB((228/(double)255),(86/(double)255),(60/(double)255));
+	colorDataSet[19] = new RGB((196/(double)255),(0/(double)255),(0/(double)255));
+	colorDataSet[20] = new RGB((216/(double)255),(152/(double)255),(129/(double)255));
+	colorDataSet[21] = new RGB((170/(double)255),(65/(double)255),(45/(double)255));
+	colorDataSet[22] = new RGB((204/(double)255),(0/(double)255),(0/(double)255));
+	colorDataSet[23] = new RGB((202/(double)255),(153/(double)255),(134/(double)255));
+	colorDataSet[24] = new RGB((227/(double)255),(111/(double)255),(83/(double)255));
+	colorDataSet[25] = new RGB((194/(double)255),(32/(double)255),(19/(double)255));
+	colorDataSet[26] = new RGB((216/(double)255),(175/(double)255),(156/(double)255));
+	colorDataSet[27] = new RGB((170/(double)255),(83/(double)255),(62/(double)255));
+	colorDataSet[28] = new RGB((203/(double)255),(36/(double)255),(23/(double)255));
+	colorDataSet[29] = new RGB((203/(double)255),(176/(double)255),(153/(double)255));
+	colorDataSet[30] = new RGB((227/(double)255),(135/(double)255),(108/(double)255));
+	colorDataSet[31] = new RGB((194/(double)255),(53/(double)255),(35/(double)255));
+	colorDataSet[32] = new RGB((217/(double)255),(198/(double)255),(187/(double)255));
+	colorDataSet[33] = new RGB((170/(double)255),(101/(double)255),(81/(double)255));
+	colorDataSet[34] = new RGB((203/(double)255),(59/(double)255),(41/(double)255));
+	colorDataSet[35] = new RGB((203/(double)255),(188/(double)255),(167/(double)255));
+	
+	return colorDataSet;	
+}
+
+vector<RGB* > Utils::createGreenColorDataSet(){
+	vector<RGB* > colorDataSet;
+	colorDataSet.resize(36);
+	
+	colorDataSet[0] = new RGB((0/(double)255),(82/(double)255),(33/(double)255));
+	colorDataSet[1] = new RGB((125/(double)255),(164/(double)255),(120/(double)255));
+	colorDataSet[2] = new RGB((115/(double)255),(195/(double)255),(108/(double)255));
+	colorDataSet[3] = new RGB((24/(double)255),(134/(double)255),(45/(double)255));
+	colorDataSet[4] = new RGB((174/(double)255),(217/(double)255),(167/(double)255));
+	colorDataSet[5] = new RGB((98/(double)255),(166/(double)255),(92/(double)255));
+	colorDataSet[6] = new RGB((26/(double)255),(102/(double)255),(46/(double)255));
+	colorDataSet[7] = new RGB((153/(double)255),(184/(double)255),(147/(double)255));
+	colorDataSet[8] = new RGB((140/(double)255),(207/(double)255),(127/(double)255));
+	colorDataSet[9] = new RGB((58/(double)255),(153/(double)255),(68/(double)255));
+	colorDataSet[10] = new RGB((198/(double)255),(228/(double)255),(191/(double)255));
+	colorDataSet[11] = new RGB((119/(double)255),(176/(double)255),(108/(double)255));
+	colorDataSet[12] = new RGB((42/(double)255),(111/(double)255),(55/(double)255));
+	colorDataSet[13] = new RGB((185/(double)255),(204/(double)255),(179/(double)255));
+	colorDataSet[14] = new RGB((166/(double)255),(218/(double)255),(149/(double)255));
+	colorDataSet[15] = new RGB((81/(double)255),(164/(double)255),(82/(double)255));
+	colorDataSet[16] = new RGB((223/(double)255),(238/(double)255),(218/(double)255));
+	colorDataSet[17] = new RGB((141/(double)255),(186/(double)255),(127/(double)255));
+	colorDataSet[18] = new RGB((63/(double)255),(128/(double)255),(70/(double)255));
+	colorDataSet[19] = new RGB((26/(double)255),(148/(double)255),(49/(double)255));
+	colorDataSet[20] = new RGB((179/(double)255),(225/(double)255),(172/(double)255));
+	colorDataSet[21] = new RGB((109/(double)255),(185/(double)255),(102/(double)255));
+	colorDataSet[22] = new RGB((21/(double)255),(119/(double)255),(40/(double)255));
+	colorDataSet[23] = new RGB((162/(double)255),(203/(double)255),(155/(double)255));
+	colorDataSet[24] = new RGB((81/(double)255),(137/(double)255),(82/(double)255));
+	colorDataSet[25] = new RGB((65/(double)255),(169/(double)255),(76/(double)255));
+	colorDataSet[26] = new RGB((204/(double)255),(235/(double)255),(197/(double)255));
+	colorDataSet[27] = new RGB((133/(double)255),(196/(double)255),(120/(double)255));
+	colorDataSet[28] = new RGB((52/(double)255),(136/(double)255),(60/(double)255));
+	colorDataSet[29] = new RGB((184/(double)255),(212/(double)255),(178/(double)255));
+	colorDataSet[30] = new RGB((105/(double)255),(155/(double)255),(103/(double)255));
+	colorDataSet[31] = new RGB((89/(double)255),(182/(double)255),(91/(double)255));
+	colorDataSet[32] = new RGB((230/(double)255),(245/(double)255),(226/(double)255));
+	colorDataSet[33] = new RGB((158/(double)255),(207/(double)255),(141/(double)255));
+	colorDataSet[34] = new RGB((72/(double)255),(146/(double)255),(73/(double)255));
+	colorDataSet[35] = new RGB((208/(double)255),(221/(double)255),(203/(double)255));
+	
+	return colorDataSet;
+}
+
+vector<RGB* > Utils::createYellowColorDataSet(){
+	vector<RGB* > colorDataSet;
+	colorDataSet.resize(36);
+	
+	colorDataSet[0] = new RGB((255/(double)255),(242/(double)255),(0/(double)255));
+	colorDataSet[1] = new RGB((255/(double)255),(255/(double)255),(153/(double)255));
+	colorDataSet[2] = new RGB((242/(double)255),(242/(double)255),(37/(double)255));
+	colorDataSet[3] = new RGB((204/(double)255),(194/(double)255),(0/(double)255));
+	colorDataSet[4] = new RGB((230/(double)255),(230/(double)255),(138/(double)255));
+	colorDataSet[5] = new RGB((179/(double)255),(179/(double)255),(28/(double)255));
+	colorDataSet[6] = new RGB((255/(double)255),(247/(double)255),(0/(double)255));
+	colorDataSet[7] = new RGB((255/(double)255),(255/(double)255),(191/(double)255));
+	colorDataSet[8] = new RGB((242/(double)255),(242/(double)255),(73/(double)255));
+	colorDataSet[9] = new RGB((204/(double)255),(198/(double)255),(0/(double)255));
+	colorDataSet[10] = new RGB((230/(double)255),(230/(double)255),(172/(double)255));
+	colorDataSet[11] = new RGB((179/(double)255),(179/(double)255),(54/(double)255));
+	colorDataSet[12] = new RGB((255/(double)255),(255/(double)255),(0/(double)255));
+	colorDataSet[13] = new RGB((255/(double)255),(255/(double)255),(230/(double)255));
+	colorDataSet[14] = new RGB((242/(double)255),(242/(double)255),(109/(double)255));
+	colorDataSet[15] = new RGB((204/(double)255),(204/(double)255),(0/(double)255));
+	colorDataSet[16] = new RGB((230/(double)255),(230/(double)255),(207/(double)255));
+	colorDataSet[17] = new RGB((191/(double)255),(191/(double)255),(86/(double)255));
+	colorDataSet[18] = new RGB((255/(double)255),(255/(double)255),(39/(double)255));
+	colorDataSet[19] = new RGB((255/(double)255),(218/(double)255),(0/(double)255));
+	colorDataSet[20] = new RGB((255/(double)255),(232/(double)255),(52/(double)255));
+	colorDataSet[21] = new RGB((217/(double)255),(217/(double)255),(33/(double)255));
+	colorDataSet[22] = new RGB((153/(double)255),(145/(double)255),(0/(double)255));
+	colorDataSet[23] = new RGB((191/(double)255),(191/(double)255),(115/(double)255));
+	colorDataSet[24] = new RGB((255/(double)255),(255/(double)255),(77/(double)255));
+	colorDataSet[25] = new RGB((230/(double)255),(223/(double)255),(0/(double)255));
+	colorDataSet[26] = new RGB((247/(double)255),(247/(double)255),(185/(double)255));
+	colorDataSet[27] = new RGB((217/(double)255),(217/(double)255),(66/(double)255));
+	colorDataSet[28] = new RGB((166/(double)255),(161/(double)255),(0/(double)255));
+	colorDataSet[29] = new RGB((204/(double)255),(204/(double)255),(153/(double)255));
+	colorDataSet[30] = new RGB((255/(double)255),(255/(double)255),(115/(double)255));
+	colorDataSet[31] = new RGB((186/(double)255),(165/(double)255),(0/(double)255));
+	colorDataSet[32] = new RGB((247/(double)255),(247/(double)255),(223/(double)255));
+	colorDataSet[33] = new RGB((217/(double)255),(217/(double)255),(98/(double)255));
+	colorDataSet[34] = new RGB((166/(double)255),(166/(double)255),(0/(double)255));
+	colorDataSet[35] = new RGB((217/(double)255),(217/(double)255),(196/(double)255));
+	
+	return colorDataSet;
+}
+
+/*
+vector<RGB* > Utils::createColorDataSet(){
+	vector<RGB* > colorDataSet;
+	colorDataSet.resize(36);
+	
+	colorDataSet[0] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[1] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[2] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[3] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[4] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[5] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[6] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[7] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[8] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[9] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[10] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[11] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[12] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[13] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[14] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[15] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[16] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[17] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[18] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[19] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[20] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[21] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[22] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[23] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[24] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[25] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[26] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[27] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[28] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[29] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[30] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[31] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[32] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[33] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[34] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	colorDataSet[35] = new RGB((/(double)255),(/(double)255),(/(double)255));
+	
+	return colorDataSet;
+}
+*/
+
 string Utils::currentTime(){
 	time_t now = time(0);
 	struct tm tstruct;
@@ -333,3 +555,4 @@ string Utils::buildFileName(){
 		to_string(day) + "-" + Utils::currentTime() + ".txt";
 	return fileName;
 }
+

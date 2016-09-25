@@ -16,6 +16,7 @@ class Neuron{
 	public:
 		Neuron(int x, int y, int totalWeights);
 		Neuron(int x, int y, vector<double> weigths);
+		Neuron(int x, int y, int totalWeights, RGB* rgb);
 		~Neuron();
 
 		int getX();
@@ -29,6 +30,7 @@ class Neuron{
 		void setWeigths(vector<double> weigths);
 		void setNeuronColor(double red, double green, double blue);
 		void setNeuronColor(vector<double> rgb);
+		void setRGB(RGB *rgb);
 
 		void info();
 		string exportNeuronWeights();
