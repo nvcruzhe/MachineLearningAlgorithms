@@ -21,8 +21,7 @@ class Matrix{
 		vector<vector<Neuron*> > getMatrix();
 		void updateWeightVector(double influence, double learningRate,
 			vector<double> inputVector, int x, int y);
-		void updateWeightVector(double gaussian,
-			vector<double> inputVector, int x, int y);
+		void updateWeightVector(vector<double> weightVector, int x, int y);
 		void printMatrix();
 
 	private:

@@ -4,10 +4,8 @@
 #include <vector>
 #include <GL/glut.h>
 
-#include "SelfOrganizingMaps.h"
-#include "utils.h"
+#include "Classes.h"
 
-#define NEURON_NUM 1
 #define WIDTH 400
 #define HEIGTH 400
 #define TOTALWEIGHTS 3
@@ -29,13 +27,22 @@ void init();
 SelfOrganizingMaps *som;
 bool training;
 vector<vector<double> > dataSet;
-vector<vector<double> > testDataset; 
+vector<vector<double> > testDataset;
+int _argc;
+char *_fileName;
 
 int main(int argc, char **argv){
+	// Check if argv has more than one argument
+
+	_argc = argc;
+	if(argc > 1){
+		_fileName = argv[1];
+	}
+
 	// Algorithm initialization
 	dataSet = Utils::createColorDataSet(DATASETSIZE, TOTALWEIGHTS);
 	testDataset = Utils::createColorTestDataSet(); 
-	som = new SelfOrganizingMaps(SIZE, TOTALWEIGHTS, MAXEPOCHS, DATASETSIZE, INITIALLEARNINGRATE);
+	som = new SelfOrganizingMaps(SIZE, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE);
 	training = false;
 
 	// Open GL
@@ -126,8 +133,20 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 				training = !training;
 			break;
 		case 'e':
-			Utils::exportMatrixToFile(som->getMatrix(), som->getEpochs());
+			Utils::exportMatrixToFile(som->getMatrix(), som->getEpochs(),
+				MAXEPOCHS, INITIALLEARNINGRATE, som->getCurrenLearningRate());
 			break;
+		case 'i':
+			if(training)
+				training = !training;
+			if(_argc > 1){
+			Utils::importMatrixFromFile(_fileName, som);
+			glutPostRedisplay();
+			cout << "Termino de actualizar y ya debe estar repintado" << endl;
+			}else{
+				cout << "No es posible cargar un entranamiento porque ";
+				cout << "no fue proporcionado un nombre de archivo." << endl;
+			}
 	}
 }
 

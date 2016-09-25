@@ -1,18 +1,33 @@
-#include "SelfOrganizingMaps.h"
+#include "Classes.h"
 
 SelfOrganizingMaps::SelfOrganizingMaps(int size, int totalWeights,
-	int maxEpochs, int totalSamples, double defaultLearningRate):
+	int maxEpochs, double initialLearningRate):
 	_iterations(0), _size(size), _totalWeigths(totalWeights),
-	_maxEpochs(maxEpochs), _totalSamples(totalSamples),
-	_epochs(0), _defaultLearningRate(defaultLearningRate),
+	_maxEpochs(maxEpochs),
+	_epochs(0), _initialLearningRate(initialLearningRate),
 	_initialNeighbourhoodRadius(size/2){
 	_matrix =  new Matrix(_size, _totalWeigths);
 	_radiusTimeConstant = _maxEpochs/log(_initialNeighbourhoodRadius);
-	_learningRateTimeConstant = _maxEpochs/log(defaultLearningRate);
+	_learningRateTimeConstant = _maxEpochs/log(_initialLearningRate);
 }
 
 SelfOrganizingMaps::~SelfOrganizingMaps(){
 	delete _matrix;
+}
+
+void SelfOrganizingMaps::reConstructSelfOrganizingMap(int size, int totalWeights,
+	int maxEpochs, double initialLearningRate, int epochs){
+	delete(_matrix);
+	_iterations = 0;
+	_size = size;
+	_totalWeigths = totalWeights;
+	_maxEpochs = maxEpochs;
+	_epochs = epochs;
+	_initialLearningRate = initialLearningRate;
+	_initialNeighbourhoodRadius =  _size/2;
+	_matrix =  new Matrix(_size, _totalWeigths);
+	_radiusTimeConstant = _maxEpochs/log(_initialNeighbourhoodRadius);
+	_learningRateTimeConstant = _maxEpochs/log(_initialLearningRate);
 }
 
 int SelfOrganizingMaps::getIterations(){
@@ -191,6 +206,16 @@ void SelfOrganizingMaps::trainSegmentedFunctions(vector<double> inputVector){
 	}
 }
 
+/*
+* The SOM algorithm uses de exponential decay function, for getting
+* the learning rate.
+* Over time the learning rate will be reduced close to 0.
+*/
+double SelfOrganizingMaps::getCurrenLearningRate(){
+	//return _initialLearningRate * exp(-(double)_epochs/_learningRateTimeConstant);
+	return ((double)_epochs/_maxEpochs);
+}
+
 void SelfOrganizingMaps::evaluateIndependentVector(vector<double> inputVector){
 	Neuron *bmu = getBMU(inputVector);
 	_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(0,0,0);
@@ -235,6 +260,10 @@ void SelfOrganizingMaps::evaluateIndependentVector(vector<double> inputVector){
 		cout << "The BMU is in the borders" << endl;
 	}
 */
+}
+
+void SelfOrganizingMaps::setWeightVector(vector<double> weightVector, int x, int y){
+	_matrix->updateWeightVector(weightVector, x, y);
 }
 
 // OpenGL needed functions
@@ -294,15 +323,6 @@ double SelfOrganizingMaps::getNeighbourhoodRadius(){
 }
 
 /*
-* The SOM algorithm uses de exponential decay function, for getting
-* the learning rate.
-* Over time the learning rate will be reduced close to 0.
-*/
-double SelfOrganizingMaps::getCurrenLearningRate(){
-	return _defaultLearningRate * exp(-(double)_epochs/_learningRateTimeConstant);
-}
-
-/*
 * Determines the influence that the input vector will have in a neuron
 * based in its distance.
 */
@@ -341,7 +361,7 @@ void SelfOrganizingMaps::updateMatrixWeigths(Neuron *bmu, vector<double> inputVe
 
 	// Adjusting weigths of neurons
 	// Get current Learning Rate
-	double currenLearningRate = ((double)_epochs/_maxEpochs);
+	double currenLearningRate = getCurrenLearningRate();
 	if(currenLearningRate >= 1){
 		currenLearningRate = 0.99;
 	}
