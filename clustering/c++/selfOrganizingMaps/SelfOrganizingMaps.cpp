@@ -1,18 +1,19 @@
 #include "Classes.h"
 
 SelfOrganizingMaps::SelfOrganizingMaps(int size, int totalWeights,
-	int maxEpochs, double initialLearningRate, int totalSamples):
+	int maxEpochs, double initialLearningRate, int totalSamples, bool initialize):
 	_iterations(0), _size(size), _totalWeigths(totalWeights),
 	_maxEpochs(maxEpochs),
 	_epochs(0), _initialLearningRate(initialLearningRate),
 	_initialNeighbourhoodRadius(size/2), _totalSamples(totalSamples){
-	_matrix =  new Matrix(_size, _totalWeigths);
+	_matrix =  new Matrix(_size, _totalWeigths, initialize);
 	_radiusTimeConstant = _maxEpochs/log(_initialNeighbourhoodRadius);
 	_learningRateTimeConstant = _maxEpochs/log(_initialLearningRate);
 }
 
 SelfOrganizingMaps::SelfOrganizingMaps(int size, int totalWeights,
-	int maxEpochs, double initialLearningRate, vector<RGB* > dataSet, int totalSamples):
+	int maxEpochs, double initialLearningRate, vector<RGB* > dataSet,
+	int totalSamples):
 	_iterations(0), _size(size), _totalWeigths(totalWeights),
 	_maxEpochs(maxEpochs),
 	_epochs(0), _initialLearningRate(initialLearningRate),
@@ -25,21 +26,6 @@ SelfOrganizingMaps::SelfOrganizingMaps(int size, int totalWeights,
 
 SelfOrganizingMaps::~SelfOrganizingMaps(){
 	delete _matrix;
-}
-
-void SelfOrganizingMaps::reConstructSelfOrganizingMap(int size, int totalWeights,
-	int maxEpochs, double initialLearningRate, int epochs){
-	delete(_matrix);
-	_iterations = 0;
-	_size = size;
-	_totalWeigths = totalWeights;
-	_maxEpochs = maxEpochs;
-	_epochs = epochs;
-	_initialLearningRate = initialLearningRate;
-	_initialNeighbourhoodRadius =  _size/2;
-	_matrix =  new Matrix(_size, _totalWeigths);
-	_radiusTimeConstant = _maxEpochs/log(_initialNeighbourhoodRadius);
-	_learningRateTimeConstant = _maxEpochs/log(_initialLearningRate);
 }
 
 int SelfOrganizingMaps::getIterations(){
@@ -278,6 +264,10 @@ void SelfOrganizingMaps::setWeightVector(vector<double> weightVector, int x, int
 	_matrix->updateWeightVector(weightVector, x, y);
 }
 
+void SelfOrganizingMaps::setNeuron(Neuron *neuron){
+	_matrix->setNeuron(neuron);
+}
+
 // OpenGL needed functions
 
 void SelfOrganizingMaps::displayUsingWeigths(){
@@ -318,7 +308,7 @@ void SelfOrganizingMaps::displayUsingNeuronColor(){
 
 void SelfOrganizingMaps::reset(){
 	_bmuTestCases.clear();
-	_matrix =  new Matrix(_size, _totalWeigths);
+	_matrix =  new Matrix(_size, _totalWeigths, true);
 	_iterations = 0;
 	_epochs = 0;
 }

@@ -27,45 +27,38 @@ void Utils::exportMatrixToFile(Matrix *matrix, int completedEpochs,
 	cout << "Se ha terminado de guardar el entrenamiento" << endl;
 }
 
-void Utils::importMatrixFromFile(char *fileName, SelfOrganizingMaps *som){
-	//const char* fileName = "trainedMatrix.txt";
-	std::ifstream infile(fileName);
-	string line;
-	vector<double> neuronRGB;
-	//cout << "Start reading file" << endl;
-	getline(infile,line);
-	int size = atoi(line.c_str());
-	//cout << "Size: " << size << endl;
-	getline(infile,line);
-	int executedEpochs = atoi(line.c_str());
-	//cout << "Executed epochs: " << executedEpochs << endl;
-	getline(infile,line);
-	int maxEpochs = atoi(line.c_str());
-	//cout << "MAX Epochs" << maxEpochs << endl;
-	getline(infile,line);
-	double initialLearningRate = atof(line.c_str());
-	//cout << "Initial Learning rate: " << initialLearningRate << endl;
-	getline(infile,line);
-	double currentLearningRate = atof(line.c_str());
-	//cout << "Current Learning rate: " << currentLearningRate << endl;
-	getline(infile,line);
-	int totalWeights = atoi(line.c_str());
-	//cout << "Total Weights: " << totalWeights << endl;
-	neuronRGB.resize(totalWeights);
-	som->reConstructSelfOrganizingMap(size, totalWeights, maxEpochs,
-		initialLearningRate, executedEpochs);
+SelfOrganizingMaps* Utils::importMatrixFromFile(char *fileName){
+    std::ifstream infile(fileName);
+    string line;
+    vector<double> neuronRGB;
+    getline(infile,line);
+    int size = atoi(line.c_str());
+    getline(infile,line);
+    int executedEpochs = atoi(line.c_str());
+    getline(infile,line);
+    int maxEpochs = atoi(line.c_str());
+    getline(infile,line);
+    double initialLearningRate = atof(line.c_str());
+    getline(infile,line);
+    double currentLearningRate = atof(line.c_str());
+    getline(infile,line);
+    int totalWeights = atoi(line.c_str());
+    neuronRGB.resize(totalWeights);
+    SelfOrganizingMaps *som = new SelfOrganizingMaps(size, totalWeights,
+		maxEpochs, initialLearningRate, 0, false);
 	for(int row=0; row<size; row++){ // For every row
 		getline(infile,line);
-		stringstream ssin(line);
-		for(int col=0; col<size; col++){ // for each column
+        stringstream ssin(line);
+        for(int col=0; col<size; col++){ // for each column
 			// Get all the weights of the neuron in (row, col)
-			for(int weigths=0; weigths<totalWeights; weigths++){
+            for(int weigths=0; weigths<totalWeights; weigths++){
 				ssin >> neuronRGB[weigths];
-			}
-			som->setWeightVector(neuronRGB, row, col);
-		}
-	}
-	//cout << "Finish reading file" << endl;
+            }
+            RGB *rgb = new RGB(neuronRGB[0], neuronRGB[1], neuronRGB[2]);
+            som->setNeuron(new Neuron(row, col, totalWeights, rgb));
+        }
+    }
+    return som;
 }
 
 vector<vector<double> > Utils::createColorDataSet(int dataSetSize, int totalWeigths){

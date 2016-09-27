@@ -28,7 +28,7 @@ class Utils{
 		static void exportMatrixToFile(Matrix *matrix, int completedEpochs,
 			int maxEpochs, double initialLearningRate,
 			double finalLearningRate);
-		static void importMatrixFromFile(char *fileName, SelfOrganizingMaps *som);
+		static SelfOrganizingMaps* importMatrixFromFile(char *fileName);
 
 		// DataSets
 		static vector<vector<double> > createColorDataSet(int dataSetSize, int totalWeigths);
@@ -61,13 +61,11 @@ class Utils{
 class SelfOrganizingMaps{
 	public:
 		SelfOrganizingMaps(int size, int totalWeights, int maxEpochs,
-			double learningRate, int totalSamples);
+			double learningRate, int totalSamples, bool initialize);
 		SelfOrganizingMaps(int size, int totalWeights,
 			int maxEpochs, double initialLearningRate, vector<RGB* > dataSet,
 			int totalSamples);
 		~SelfOrganizingMaps();
-		void reConstructSelfOrganizingMap(int size, int totalWeights,
-			int maxEpochs, double initialLearningRate, int epochs);
 		int getIterations();
 		int getEpochs();
 		int getSize();
@@ -82,6 +80,7 @@ class SelfOrganizingMaps{
 			_initialLearningRate = initialLearningRate;
 		}
 		void setTotalWeights(int totalWeights){_totalWeigths =  totalWeights;}
+		void setNeuron(Neuron *neuron);
 
 		// Main functionality of the algorithm
 		void train(vector<double> inputVector);

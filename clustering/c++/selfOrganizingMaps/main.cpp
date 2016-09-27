@@ -8,8 +8,8 @@
 
 #define TOTALWEIGHTS 3
 #define MAXEPOCHS 1000
-#define SIZE 100
-#define DATASETSIZE 48
+#define NORMALSIZE 100
+#define IMPORTSIZE 200
 #define INITIALLEARNINGRATE 0.1
 #define WINDOWTITLE "Self Organizing Maps"
 
@@ -32,7 +32,8 @@ double _openGLFovy;
 char *_fileName;
 
 // main methods
-void algorithmInitialization(int dataSetType, int size);
+void algorithmInitialization(int dataSetType, int size, int totalWeigths,
+	int maxEpochs, double initialLearningRate);
 
 // OpenGl methods
 void display(void);
@@ -60,7 +61,8 @@ int main(int argc, char **argv){
 	switch(_executionType){
 		case 0: // Dataset
 			_dataSetType = atoi(argv[2]);
-			algorithmInitialization(_dataSetType,100);
+			algorithmInitialization(_dataSetType, NORMALSIZE, TOTALWEIGHTS,
+				MAXEPOCHS, INITIALLEARNINGRATE);
 			_width = 400;
 			_height = 400;
 			_openGLFovy = 45.0;
@@ -70,6 +72,7 @@ int main(int argc, char **argv){
 			_width = 800;
 			_height = 800;
 			_openGLFovy = 90.0;
+			_som = Utils::importMatrixFromFile(_fileName);
 			break;
 	}
 
@@ -98,14 +101,15 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void algorithmInitialization(int dataSetType, int size){
+void algorithmInitialization(int dataSetType, int size, int totalWeigths,
+	int maxEpochs, double initialLearningRate){
 	switch(dataSetType){
 		// Many colors dataset
 		case 1:
-			_trainingDataSet = Utils::createColorDataSet(DATASETSIZE, TOTALWEIGHTS);
+			_trainingDataSet = Utils::createColorDataSet(48, totalWeigths);
 			_dataSetSize = _trainingDataSet.size();
 			_testDataset = Utils::createColorTestDataSet();
-			_som = new SelfOrganizingMaps(size, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, _dataSetSize);
+			_som = new SelfOrganizingMaps(size, totalWeigths, maxEpochs, initialLearningRate, _dataSetSize, true);
 			break;
 
 		// Blue colors dataset
@@ -113,29 +117,29 @@ void algorithmInitialization(int dataSetType, int size){
 			_initializationDataSet = Utils::createBlueColorBuildMatrixDataSet();
 			_rgbTrainingDataSet = Utils::createBlueColorTrainMatrixDataSet();
 			_dataSetSize = _rgbTrainingDataSet.size();
-			_som = new SelfOrganizingMaps(size, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, _initializationDataSet, _dataSetSize);
+			_som = new SelfOrganizingMaps(size, totalWeigths, maxEpochs, initialLearningRate, _initializationDataSet, _dataSetSize);
 			break;
 		case 3:
 			_initializationDataSet = Utils::createRedColorBuildMatrixDataSet();
 			_rgbTrainingDataSet = Utils::createRedColorTrainMatrixDataSet();
 			_dataSetSize = _rgbTrainingDataSet.size();
-			_som = new SelfOrganizingMaps(size, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, _initializationDataSet, _dataSetSize);
+			_som = new SelfOrganizingMaps(size, totalWeigths, maxEpochs, initialLearningRate, _initializationDataSet, _dataSetSize);
 			break;
 		case 4:
 			_initializationDataSet = Utils::createGreenColorBuildMatrixDataSet();
 			_rgbTrainingDataSet = Utils::createGreenColorTrainMatrixDataSet();
 			_dataSetSize = _rgbTrainingDataSet.size();
-			_som = new SelfOrganizingMaps(size, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, _initializationDataSet, _dataSetSize);
+			_som = new SelfOrganizingMaps(size, totalWeigths, maxEpochs, initialLearningRate, _initializationDataSet, _dataSetSize);
 			break;
 		case 5:
 			_initializationDataSet = Utils::createYellowColorBuildMatrixDataSet();
 			_rgbTrainingDataSet = Utils::createYellowColorTrainMatrixDataSet();
 			_dataSetSize = _rgbTrainingDataSet.size();
-			_som = new SelfOrganizingMaps(size, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, _initializationDataSet, _dataSetSize);
+			_som = new SelfOrganizingMaps(size, totalWeigths, maxEpochs, initialLearningRate, _initializationDataSet, _dataSetSize);
 			break;
-		case 6:
+		default:
 			_initializationDataSet = Utils::createMultipleColorBuildMatrixDataSet();
-			_rgbTrainingDataSet = Utils::createBlueColorTrainMatrixDataSet();
+			_rgbTrainingDataSet = Utils::createMultipleColorTrainMatrixDataSet();
 			_dataSetSize = _rgbTrainingDataSet.size();
 			_som = new SelfOrganizingMaps(size, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, _initializationDataSet, _dataSetSize);
 			break;
@@ -210,17 +214,6 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 			Utils::exportMatrixToFile(_som->getMatrix(), _som->getEpochs(),
 				MAXEPOCHS, INITIALLEARNINGRATE, _som->getCurrenLearningRate());
 			break;
-		case 'i':
-			if(_training)
-				_training = !_training;
-			if(_argc > 1){
-			Utils::importMatrixFromFile(_fileName, _som);
-			glutPostRedisplay();
-			cout << "Termino de actualizar y ya debe estar repintado" << endl;
-			}else{
-				cout << "No es posible cargar un entranamiento porque ";
-				cout << "no fue proporcionado un nombre de archivo." << endl;
-			}
 	}
 }
 

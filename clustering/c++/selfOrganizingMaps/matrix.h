@@ -13,7 +13,7 @@ using namespace std;
 
 class Matrix{
 	public:
-		Matrix(int size, int totalWeights);
+		Matrix(int size, int totalWeights, bool initialize);
 		Matrix(int size, int totalWeights, vector<RGB*> dataSet);
 		~Matrix();
 		int getSize();
@@ -25,6 +25,7 @@ class Matrix{
 			vector<double> inputVector, int x, int y);
 		void updateWeightVector(vector<double> weightVector, int x, int y);
 		void printMatrix();
+		void setNeuron(Neuron *neuron);
 
 	private:
 		int _size; // Width and Heigth of the matrix
