@@ -27,10 +27,13 @@ void Utils::exportMatrixToFile(Matrix *matrix, int completedEpochs,
 	cout << "Se ha terminado de guardar el entrenamiento" << endl;
 }
 
-SelfOrganizingMaps* Utils::importMatrixFromFile(char *fileName){
-    std::ifstream infile(fileName);
+SelfOrganizingMaps* Utils::importSOMFromFiles(char *fileName){
+    fstream infile;
     string line;
     vector<double> neuronRGB;
+
+    infile.open(fileName);
+
     getline(infile,line);
     int size = atoi(line.c_str());
     getline(infile,line);
@@ -43,9 +46,12 @@ SelfOrganizingMaps* Utils::importMatrixFromFile(char *fileName){
     double currentLearningRate = atof(line.c_str());
     getline(infile,line);
     int totalWeights = atoi(line.c_str());
+    
     neuronRGB.resize(totalWeights);
+    
     SelfOrganizingMaps *som = new SelfOrganizingMaps(size, totalWeights,
 		maxEpochs, initialLearningRate, 0, false);
+	
 	for(int row=0; row<size; row++){ // For every row
 		getline(infile,line);
         stringstream ssin(line);
@@ -58,6 +64,119 @@ SelfOrganizingMaps* Utils::importMatrixFromFile(char *fileName){
             som->setNeuron(new Neuron(row, col, totalWeights, rgb));
         }
     }
+
+    infile.close();
+
+    return som;
+}
+
+Matrix* Utils::importMatrixFromFile(char *fileName){
+    fstream infile;
+    string line;
+    vector<double> neuronRGB;
+
+    infile.open(fileName);
+
+    getline(infile,line);
+    int size = atoi(line.c_str());
+    getline(infile,line);
+    int executedEpochs = atoi(line.c_str());
+    getline(infile,line);
+    int maxEpochs = atoi(line.c_str());
+    getline(infile,line);
+    double initialLearningRate = atof(line.c_str());
+    getline(infile,line);
+    double currentLearningRate = atof(line.c_str());
+    getline(infile,line);
+    int totalWeights = atoi(line.c_str());
+    
+    neuronRGB.resize(totalWeights);
+    
+    Matrix *matrix = new Matrix(size, totalWeights, false);
+	
+	for(int row=0; row<size; row++){ // For every row
+		getline(infile,line);
+        stringstream ssin(line);
+        for(int col=0; col<size; col++){ // for each column
+			// Get all the weights of the neuron in (row, col)
+            for(int weigths=0; weigths<totalWeights; weigths++){
+				ssin >> neuronRGB[weigths];
+            }
+            RGB *rgb = new RGB(neuronRGB[0], neuronRGB[1], neuronRGB[2]);
+            matrix->setNeuron(new Neuron(row, col, totalWeights, rgb));
+        }
+    }
+
+    infile.close();
+
+    return matrix;
+}
+
+SelfOrganizingMaps* Utils::importSOMFromFiles(vector<char *> fileNames,
+	int matrixComposition, int totalFiles){
+
+	// Final matrix variables
+	int diferential = matrixComposition - 1;
+	int matrixSize = 0;
+	int matrixTotalWeights = 0;
+	int matrixRow = 0;
+	int matrixCol = 0;
+
+	// Individual matrix variables
+	vector<Matrix *> matrices;
+	int matricesIndex = 0;
+	int singleMatrixSize = 0;
+	int singleMatrixColumn = 0;
+	int singleMatrixRow = 0;
+
+	for(int i=0; i<totalFiles; i++){
+		matrices.push_back(Utils::importMatrixFromFile(fileNames[i]));
+	}
+
+	// TODO: get the minimum size of all the matrixes and with that
+	// set the single matrix size
+	singleMatrixSize = matrices[0]->getSize();
+	matrixSize = matrixComposition * singleMatrixSize;
+	matrixTotalWeights = matrices[0]->getTotalWeights();
+
+	Matrix *matrix =  new Matrix(matrixSize, matrixTotalWeights, false);
+
+	for(int row=0; row< matrixSize; row++){
+		for(int col=0; col<matrixSize; col++){
+			// Gets the individual matrix that corresponds to
+			// the current row
+			matrixRow = row/singleMatrixSize;
+
+			// Gets the individual matrix that corresponds to
+			// the current col
+			matrixCol = col/singleMatrixSize;
+
+			singleMatrixRow = row%singleMatrixSize;
+			singleMatrixColumn = col%singleMatrixSize;
+
+			// From which matrix I'll take the neuron, based on the current
+			//row and column
+			matricesIndex = (matrixRow + matrixCol) + (matrixRow * diferential);
+			
+#ifdef DEBUG
+			cout << "Utils CH: " << row << " "<< matricesIndex << "(" << singleMatrixRow << "," << singleMatrixColumn << ")   -   ";
+			cout << "(" << row << "," << col << ")" << endl;
+#endif
+			
+			Neuron *currentNeuron = matrices[matricesIndex]->getNeuron(singleMatrixRow,singleMatrixColumn);
+			currentNeuron->setY(row);
+			currentNeuron->setX(col);
+			matrix->setNeuron(currentNeuron);
+#ifdef DEBUG
+			cout << "Utils CH: " << row << " " << matricesIndex << "(" << singleMatrixRow << "," << singleMatrixColumn << ")   -   ";
+			cout << "(" << row << "," << col << ")" << endl;
+#endif
+		}
+	}
+
+	// TODO: get maxEpochs and initial learning rate
+	SelfOrganizingMaps *som = new SelfOrganizingMaps(matrixSize, matrixTotalWeights, 0, 0, matrix, 0);
+
     return som;
 }
 

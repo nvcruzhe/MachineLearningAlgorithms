@@ -23,6 +23,17 @@ SelfOrganizingMaps::SelfOrganizingMaps(int size, int totalWeights,
 	_learningRateTimeConstant = _maxEpochs/log(_initialLearningRate);
 }
 
+SelfOrganizingMaps::SelfOrganizingMaps(int size, int totalWeights,
+			int maxEpochs, double initialLearningRate, Matrix *matrix,
+			int totalSamples):
+	_iterations(0), _size(size), _totalWeigths(totalWeights),
+	_maxEpochs(maxEpochs),
+	_epochs(0), _initialLearningRate(initialLearningRate),
+	_initialNeighbourhoodRadius(size/2), _totalSamples(totalSamples){
+	_matrix =  matrix;
+	_radiusTimeConstant = _maxEpochs/log(_initialNeighbourhoodRadius);
+	_learningRateTimeConstant = _maxEpochs/log(_initialLearningRate);
+}
 
 SelfOrganizingMaps::~SelfOrganizingMaps(){
 	delete _matrix;
@@ -258,6 +269,51 @@ void SelfOrganizingMaps::evaluateIndependentVector(vector<double> inputVector){
 		cout << "The BMU is in the borders" << endl;
 	}
 */
+}
+
+void SelfOrganizingMaps::evaluateIndependentRGBDataSet(vector<RGB *> inputDataset){
+	vector<double> weights;
+	double alikePercentage = 0;
+	double globalAlikePercentage = 0;
+	double percentage = 0;
+	double bmuWeight;
+	int error = 0 ;
+
+	weights.resize(3);
+	
+	for(int i=0; i<inputDataset.size(); i++){
+		weights[0] = inputDataset[i]->getRed();
+		weights[1] = inputDataset[i]->getGreen();
+		weights[2] = inputDataset[i]->getBlue();
+		Neuron *bmu = getBMU(weights);
+		_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(0,0,0);
+
+		// BMU analysis
+		alikePercentage = 0;
+		cout << "Percentage: ";
+		for(int j=0; j<3; j++){
+			percentage = 0;
+			bmuWeight = bmu->getWeights()[j];
+			
+			if(bmuWeight == 0) bmuWeight = 0.01;
+			
+			percentage = ((weights[j] * 100)/bmuWeight);
+			cout << percentage << "% ";
+			alikePercentage += percentage;
+		}
+		alikePercentage = alikePercentage/3;
+		cout << "AlikePercentage: " << alikePercentage;
+		if(alikePercentage < 70){
+			cout << " ERROR" << endl;
+			error++;
+		}else cout << endl; 
+		globalAlikePercentage += alikePercentage;
+	}
+	globalAlikePercentage = globalAlikePercentage/inputDataset.size();
+	cout << "GlobalAlikePercentage: " << globalAlikePercentage;
+	cout << " ERROR: " << error << "/" << inputDataset.size();
+	if(globalAlikePercentage < 80) cout << " ERROR" << endl;
+	else cout << endl;
 }
 
 void SelfOrganizingMaps::setWeightVector(vector<double> weightVector, int x, int y){

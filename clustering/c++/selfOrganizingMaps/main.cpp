@@ -6,6 +6,9 @@
 
 #include "Classes.h"
 
+#define BASEWIDTH 400
+#define BASEHEIGHT 400
+#define BASEOPENGLFOVY 45.0
 #define TOTALWEIGHTS 3
 #define MAXEPOCHS 1000
 #define NORMALSIZE 100
@@ -20,12 +23,12 @@ vector<vector<double> > _trainingDataSet;
 vector<vector<double> > _testDataset;
 vector<RGB* > _initializationDataSet;
 vector<RGB *> _rgbTrainingDataSet;
+vector<vector<RGB *> > _evaluationDataSet;
 SelfOrganizingMaps *_som;
 bool _training;
 int _dataSetType;
 int _executionType;
 int _dataSetSize;
-int _argc;
 int _width;
 int _height;
 double _openGLFovy;
@@ -34,6 +37,7 @@ char *_fileName;
 // main methods
 void algorithmInitialization(int dataSetType, int size, int totalWeigths,
 	int maxEpochs, double initialLearningRate);
+void createEvaluationDataSet();
 
 // OpenGl methods
 void display(void);
@@ -47,7 +51,7 @@ int main(int argc, char **argv){
 	// 0 program name
 	// 1 select matrix color formation, dataSet for training, dataSet for evaluation
 	// 2 file to import matrix
-	if(argc != 3 ){
+	if(argc < 3 ){
 		cout << "Se requieren 3 argumentos para iniciar el programa" << endl;
 		cout << "1: programa, 2: tipo de ejecucion 0) Dataset 1) Cargar matrix entrenada";
 		cout << "2: Nombre del archivo para cargar matriz entrenada o DataSet" << endl;
@@ -58,21 +62,39 @@ int main(int argc, char **argv){
 
 	_training = false;
 
+
+	createEvaluationDataSet();
+	cout << "El dataset de prueba fue creado" << endl;
+
 	switch(_executionType){
 		case 0: // Dataset
 			_dataSetType = atoi(argv[2]);
 			algorithmInitialization(_dataSetType, NORMALSIZE, TOTALWEIGHTS,
 				MAXEPOCHS, INITIALLEARNINGRATE);
-			_width = 400;
-			_height = 400;
-			_openGLFovy = 45.0;
+			_width = BASEWIDTH;
+			_height = BASEHEIGHT;
+			_openGLFovy = BASEOPENGLFOVY;
 			break;
 		case 1: // Load Matrix
-			_fileName = argv[2];
-			_width = 800;
-			_height = 800;
-			_openGLFovy = 90.0;
-			_som = Utils::importMatrixFromFile(_fileName);
+			vector<char *> fileNames;
+			int totalFiles = 0;
+			int matrixComposition = 0;
+
+			for(int files = 2; files<argc; files++){
+				fileNames.push_back(argv[files]);
+			}
+
+			totalFiles = fileNames.size();
+			matrixComposition = sqrt(totalFiles);
+			
+			_width = BASEWIDTH * matrixComposition;
+			_height = BASEHEIGHT * matrixComposition;
+			_openGLFovy = BASEOPENGLFOVY * matrixComposition;
+
+			_som = Utils::importSOMFromFiles(fileNames, matrixComposition,
+				totalFiles);
+
+			cout << "Los archivos fueron exportados" << endl;
 			break;
 	}
 
@@ -81,7 +103,6 @@ int main(int argc, char **argv){
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutCreateWindow(WINDOWTITLE);
-
 
 	// OpenGL register callback functions
 	glutDisplayFunc(display);
@@ -144,6 +165,13 @@ void algorithmInitialization(int dataSetType, int size, int totalWeigths,
 			_som = new SelfOrganizingMaps(size, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, _initializationDataSet, _dataSetSize);
 			break;
 	}
+}
+
+void createEvaluationDataSet(){
+	_evaluationDataSet.push_back(Utils::createBlueColorTrainMatrixDataSet());
+	_evaluationDataSet.push_back(Utils::createGreenColorTrainMatrixDataSet());
+	_evaluationDataSet.push_back(Utils::createYellowColorTrainMatrixDataSet());
+	_evaluationDataSet.push_back(Utils::createRedColorTrainMatrixDataSet());
 }
 
 void display(){
@@ -213,6 +241,26 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 		case 'e':
 			Utils::exportMatrixToFile(_som->getMatrix(), _som->getEpochs(),
 				MAXEPOCHS, INITIALLEARNINGRATE, _som->getCurrenLearningRate());
+			break;
+		case 'y':
+			cout << "Yellow dataset" << endl;
+			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[2]);
+			glutPostRedisplay();
+			break;
+		case 'g':
+			cout << "Green dataset" << endl;
+			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[1]);
+			glutPostRedisplay();
+			break;
+		case 'd':
+			cout << "Red dataset" << endl;
+			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[3]);
+			glutPostRedisplay();
+			break;
+		case 'b':
+			cout << "Blue dataset" << endl;
+			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[0]);
+			glutPostRedisplay();
 			break;
 	}
 }

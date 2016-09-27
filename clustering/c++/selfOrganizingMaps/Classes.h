@@ -17,6 +17,8 @@
 
 #include "matrix.h"
 
+//#define DEBUG
+
 using namespace std;
 
 class Utils;
@@ -28,7 +30,10 @@ class Utils{
 		static void exportMatrixToFile(Matrix *matrix, int completedEpochs,
 			int maxEpochs, double initialLearningRate,
 			double finalLearningRate);
-		static SelfOrganizingMaps* importMatrixFromFile(char *fileName);
+		static Matrix* importMatrixFromFile(char *fileName);
+		static SelfOrganizingMaps* importSOMFromFiles(char *fileName);
+		static SelfOrganizingMaps* importSOMFromFiles(vector<char *> fileNames,
+			int matrixComposition, int totalFiles);
 
 		// DataSets
 		static vector<vector<double> > createColorDataSet(int dataSetSize, int totalWeigths);
@@ -65,6 +70,9 @@ class SelfOrganizingMaps{
 		SelfOrganizingMaps(int size, int totalWeights,
 			int maxEpochs, double initialLearningRate, vector<RGB* > dataSet,
 			int totalSamples);
+		SelfOrganizingMaps(int size, int totalWeights,
+			int maxEpochs, double initialLearningRate, Matrix *matrix,
+			int totalSamples);
 		~SelfOrganizingMaps();
 		int getIterations();
 		int getEpochs();
@@ -96,6 +104,7 @@ class SelfOrganizingMaps{
 
 		// Testing cases
 		void evaluateIndependentVector(vector<double> inputVector);
+		void evaluateIndependentRGBDataSet(vector<RGB *> inputDataset);
 
 		// Import trained matrix
 		void setWeightVector(vector<double> weightVector, int x, int y);
