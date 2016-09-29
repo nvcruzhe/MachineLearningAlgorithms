@@ -286,7 +286,7 @@ void SelfOrganizingMaps::evaluateIndependentRGBDataSet(vector<RGB *> inputDatase
 		weights[1] = inputDataset[i]->getGreen();
 		weights[2] = inputDataset[i]->getBlue();
 		Neuron *bmu = getBMU(weights);
-		_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(0,0,0);
+		//_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(0,0,0);
 
 		// BMU analysis
 		alikePercentage = 0;
@@ -303,10 +303,14 @@ void SelfOrganizingMaps::evaluateIndependentRGBDataSet(vector<RGB *> inputDatase
 		}
 		alikePercentage = alikePercentage/3;
 		cout << "AlikePercentage: " << alikePercentage;
-		if(alikePercentage < 70){
+		if(alikePercentage < 60){
 			cout << " ERROR" << endl;
 			error++;
-		}else cout << endl; 
+			_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(255,0,0);
+		}else{
+			_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(0,0,0);
+			cout << endl;
+		} 
 		globalAlikePercentage += alikePercentage;
 	}
 	globalAlikePercentage = globalAlikePercentage/inputDataset.size();
