@@ -53,6 +53,13 @@ class Utils{
 		static vector<RGB* > createYellowColorTrainMatrixDataSet();
 		static vector<RGB* > createMultipleColorTrainMatrixDataSet();
 
+		// Test Matrix Datasets
+		static vector<RGB* > createBlueColorTestMatrixDataSet();
+		static vector<RGB* > createRedColorTestMatrixDataSet();
+		static vector<RGB* > createGreenColorTestMatrixDataSet();
+		static vector<RGB* > createYellowColorTestMatrixDataSet();
+
+
 		// Test BMU on Matrix Datasets
 
 		// Time functions

@@ -168,10 +168,10 @@ void algorithmInitialization(int dataSetType, int size, int totalWeigths,
 }
 
 void createEvaluationDataSet(){
-	_evaluationDataSet.push_back(Utils::createBlueColorTrainMatrixDataSet());
-	_evaluationDataSet.push_back(Utils::createGreenColorTrainMatrixDataSet());
-	_evaluationDataSet.push_back(Utils::createYellowColorTrainMatrixDataSet());
-	_evaluationDataSet.push_back(Utils::createRedColorTrainMatrixDataSet());
+	_evaluationDataSet.push_back(Utils::createBlueColorTestMatrixDataSet());
+	_evaluationDataSet.push_back(Utils::createGreenColorTestMatrixDataSet());
+	_evaluationDataSet.push_back(Utils::createYellowColorTestMatrixDataSet());
+	_evaluationDataSet.push_back(Utils::createRedColorTestMatrixDataSet());
 }
 
 void display(){
