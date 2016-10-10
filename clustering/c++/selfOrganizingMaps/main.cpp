@@ -22,22 +22,22 @@ using namespace std;
 vector<vector<double> > _trainingDataSet;
 vector<vector<double> > _testDataset;
 vector<RGB* > _initializationDataSet;
-vector<RGB *> _rgbTrainingDataSet;
-vector<vector<RGB *> > _evaluationDataSet;
+vector<RGB*> _rgbTrainingDataSet;
+vector<vector<RGB*> > _evaluationDataSet;
 SelfOrganizingMaps *_som;
-bool _training;
 int _dataSetType;
-int _executionType;
 int _dataSetSize;
 int _width;
 int _height;
+int _executionType;
 double _openGLFovy;
 char *_fileName;
+bool _training;
 
 // main methods
+void createEvaluationDataSet();
 void algorithmInitialization(int dataSetType, int size, int totalWeigths,
 	int maxEpochs, double initialLearningRate);
-void createEvaluationDataSet();
 
 // OpenGl methods
 void display(void);
@@ -47,35 +47,33 @@ void idle(void);
 void init();
 
 int main(int argc, char **argv){
-	// Check if argv has more than one argument
-	// 0 program name
-	// 1 select matrix color formation, dataSet for training, dataSet for evaluation
-	// 2 file to import matrix
 	if(argc < 3 ){
 		cout << "Se requieren 3 argumentos para iniciar el programa" << endl;
-		cout << "1: programa, 2: tipo de ejecucion 0) Dataset 1) Cargar matrix entrenada";
-		cout << "2: Nombre del archivo para cargar matriz entrenada o DataSet" << endl;
+		cout << "1: Programa" << endl;
+		cout << "2: tipo de ejecucion [0 - Dataset | 1 - Cargar matrix entrenada]";
+		cout << "3: Dataset deseado para crear y entrenar la matriz o archivos que comforman la matriz entrenada" << endl;
 		return 0;
 	}
 
-	_executionType = atoi(argv[1]);
+	cout << "Los argumentos para la ejecucion son validos" << endl;
 
 	_training = false;
-
+	_dataSetType = atoi(argv[2]);
+	_executionType = atoi(argv[1]);
 
 	createEvaluationDataSet();
+
 	cout << "El dataset de prueba fue creado" << endl;
 
 	switch(_executionType){
-		case 0: // Dataset
-			_dataSetType = atoi(argv[2]);
+		case 0: // Get the matrix randomly from a dataset
 			algorithmInitialization(_dataSetType, NORMALSIZE, TOTALWEIGHTS,
 				MAXEPOCHS, INITIALLEARNINGRATE);
 			_width = BASEWIDTH;
 			_height = BASEHEIGHT;
 			_openGLFovy = BASEOPENGLFOVY;
 			break;
-		case 1: // Load Matrix
+		case 1: // Get the matrix from a previous training
 			vector<char *> fileNames;
 			int totalFiles = 0;
 			int matrixComposition = 0;
@@ -128,8 +126,8 @@ void algorithmInitialization(int dataSetType, int size, int totalWeigths,
 		// Many colors dataset
 		case 1:
 			_trainingDataSet = Utils::createColorDataSet(48, totalWeigths);
-			_dataSetSize = _trainingDataSet.size();
 			_testDataset = Utils::createColorTestDataSet();
+			_dataSetSize = _trainingDataSet.size();
 			_som = new SelfOrganizingMaps(size, totalWeigths, maxEpochs, initialLearningRate, _dataSetSize, true);
 			break;
 
@@ -162,7 +160,7 @@ void algorithmInitialization(int dataSetType, int size, int totalWeigths,
 			_initializationDataSet = Utils::createMultipleColorBuildMatrixDataSet();
 			_rgbTrainingDataSet = Utils::createMultipleColorTrainMatrixDataSet();
 			_dataSetSize = _rgbTrainingDataSet.size();
-			_som = new SelfOrganizingMaps(size, TOTALWEIGHTS, MAXEPOCHS, INITIALLEARNINGRATE, _initializationDataSet, _dataSetSize);
+			_som = new SelfOrganizingMaps(size, totalWeigths, maxEpochs, initialLearningRate, _initializationDataSet, _dataSetSize);
 			break;
 	}
 }

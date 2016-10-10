@@ -25,12 +25,14 @@ Neuron::Neuron(int x, int y, vector<double> weigths) :
 
 Neuron::Neuron(int x, int y, int totalWeights, RGB* rgb) :
 	_x(x), _y(y), _totalWeights(totalWeights){
-	_weights.resize(totalWeights);
+	_weights.resize(_totalWeights);
 	_neuronColor = rgb;
 
-	_weights[0] = rgb->getRed();
-	_weights[1] = rgb->getGreen();
-	_weights[2] = rgb->getBlue();
+	if(_totalWeights>=3){
+		_weights[0] = rgb->getRed();
+		_weights[1] = rgb->getGreen();
+		_weights[2] = rgb->getBlue();
+	}
 }
 
 Neuron::~Neuron(){

@@ -72,11 +72,14 @@ class Utils{
 
 class SelfOrganizingMaps{
 	public:
+		// Create SOM completely from scratch
 		SelfOrganizingMaps(int size, int totalWeights, int maxEpochs,
 			double learningRate, int totalSamples, bool initialize);
+		// Create SOM from a specific dataset
 		SelfOrganizingMaps(int size, int totalWeights,
 			int maxEpochs, double initialLearningRate, vector<RGB* > dataSet,
 			int totalSamples);
+		// Create SOM from a Matrix already trained
 		SelfOrganizingMaps(int size, int totalWeights,
 			int maxEpochs, double initialLearningRate, Matrix *matrix,
 			int totalSamples);
