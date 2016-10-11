@@ -13,6 +13,7 @@
 #include <map>
 #include <limits>
 #include <math.h>
+#include <cfloat>
 #include <GL/glut.h>
 
 #include "matrix.h"
@@ -68,6 +69,7 @@ class Utils{
 
 		// Others
 		static string buildFileName();
+		static double getVariance(vector<double> samples, double average);
 };
 
 class SelfOrganizingMaps{
@@ -114,7 +116,7 @@ class SelfOrganizingMaps{
 
 		// Testing cases
 		void evaluateIndependentVector(vector<double> inputVector);
-		void evaluateIndependentRGBDataSet(vector<RGB *> inputDataset);
+		void evaluateIndependentRGBDataSet(vector<RGB *> inputDataset, int sigmaMultiplier);
 
 		// Import trained matrix
 		void setWeightVector(vector<double> weightVector, int x, int y);

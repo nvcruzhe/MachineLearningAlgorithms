@@ -271,53 +271,54 @@ void SelfOrganizingMaps::evaluateIndependentVector(vector<double> inputVector){
 */
 }
 
-void SelfOrganizingMaps::evaluateIndependentRGBDataSet(vector<RGB *> inputDataset){
+void SelfOrganizingMaps::evaluateIndependentRGBDataSet(vector<RGB *> inputDataset, int sigmaMultiplier){
 	vector<double> weights;
-	double alikePercentage = 0;
-	double globalAlikePercentage = 0;
-	double percentage = 0;
-	double bmuWeight;
-	int error = 0 ;
-
+	vector<double> distances;
+	vector<Neuron *> bmus;
+	double distance;
+	double totalDistance;
+	double average;
+	double variance;
+	double stdDeviation;
+	double sigma;
+	double lowerRange;
+	double upperRange;
+	int errors = 0;
 	weights.resize(3);
 	
 	for(int i=0; i<inputDataset.size(); i++){
 		weights[0] = inputDataset[i]->getRed();
 		weights[1] = inputDataset[i]->getGreen();
 		weights[2] = inputDataset[i]->getBlue();
-		Neuron *bmu = getBMU(weights);
-		//_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(0,0,0);
 
-		// BMU analysis
-		alikePercentage = 0;
-		cout << "Percentage: ";
-		for(int j=0; j<3; j++){
-			percentage = 0;
-			bmuWeight = bmu->getWeights()[j];
-			
-			if(bmuWeight == 0) bmuWeight = 0.01;
-			
-			percentage = ((weights[j] * 100)/bmuWeight);
-			cout << percentage << "% ";
-			alikePercentage += percentage;
-		}
-		alikePercentage = alikePercentage/3;
-		cout << "AlikePercentage: " << alikePercentage;
-		if(alikePercentage < 60){
-			cout << " ERROR" << endl;
-			error++;
+		Neuron *bmu = getBMU(weights);
+		distance = bmu->distanceToInputVector(weights);
+		distances.push_back(distance);
+		bmus.push_back(bmu);
+		totalDistance += distance;
+	}
+
+	average = totalDistance/inputDataset.size();
+	variance = Utils::getVariance(distances, average);
+	stdDeviation = sqrt(variance);
+	sigma = sigmaMultiplier*stdDeviation;
+	lowerRange = average - sigma;
+	upperRange = average + sigma;
+
+	for(int i=0; i<inputDataset.size();i++){
+		distance = distances[i];
+		Neuron *bmu = bmus[i];
+		if(distance < lowerRange || distance > upperRange){
 			_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(255,0,0);
+			errors++;
+			cout << "Error out of " << sigmaMultiplier << " sigma" << endl;
 		}else{
 			_matrix->getNeuron(bmu->getX(), bmu->getY())->setNeuronColor(0,0,0);
-			cout << endl;
-		} 
-		globalAlikePercentage += alikePercentage;
+			cout << "OK" << endl;
+		}
 	}
-	globalAlikePercentage = globalAlikePercentage/inputDataset.size();
-	cout << "GlobalAlikePercentage: " << globalAlikePercentage;
-	cout << " ERROR: " << error << "/" << inputDataset.size();
-	if(globalAlikePercentage < 80) cout << " ERROR" << endl;
-	else cout << endl;
+	cout << "Dataset results for " << sigmaMultiplier << " sigma " << errors;
+	cout << "/" << inputDataset.size() << endl;
 }
 
 void SelfOrganizingMaps::setWeightVector(vector<double> weightVector, int x, int y){

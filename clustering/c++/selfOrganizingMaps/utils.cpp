@@ -993,3 +993,16 @@ string Utils::buildFileName(){
 		to_string(day) + "-" + Utils::currentTime() + ".txt";
 	return fileName;
 }
+
+double Utils::getVariance(vector<double> samples, double average){
+	double variance;
+	double deviation;
+	int samplesSize =  samples.size();
+	for(int currentSample=0; currentSample<samplesSize; currentSample++){
+		deviation = samples[currentSample] - average;
+		deviation *= deviation;
+		variance += deviation;
+	}
+	variance = variance/samplesSize;
+	return variance;
+}

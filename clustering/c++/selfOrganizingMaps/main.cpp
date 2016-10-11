@@ -30,6 +30,7 @@ int _dataSetSize;
 int _width;
 int _height;
 int _executionType;
+int _sigma;
 double _openGLFovy;
 char *_fileName;
 bool _training;
@@ -58,8 +59,9 @@ int main(int argc, char **argv){
 	cout << "Los argumentos para la ejecucion son validos" << endl;
 
 	_training = false;
-	_dataSetType = atoi(argv[2]);
 	_executionType = atoi(argv[1]);
+	_dataSetType = atoi(argv[2]);
+	_sigma = 3;
 
 	createEvaluationDataSet();
 
@@ -242,22 +244,22 @@ void keyboard(unsigned char key, int mouseX, int mouseY){
 			break;
 		case 'y':
 			cout << "Yellow dataset" << endl;
-			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[2]);
+			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[2], _sigma);
 			glutPostRedisplay();
 			break;
 		case 'g':
 			cout << "Green dataset" << endl;
-			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[1]);
+			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[1], _sigma);
 			glutPostRedisplay();
 			break;
 		case 'd':
 			cout << "Red dataset" << endl;
-			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[3]);
+			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[3], _sigma);
 			glutPostRedisplay();
 			break;
 		case 'b':
 			cout << "Blue dataset" << endl;
-			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[0]);
+			_som->evaluateIndependentRGBDataSet(_evaluationDataSet[0], _sigma);
 			glutPostRedisplay();
 			break;
 	}
